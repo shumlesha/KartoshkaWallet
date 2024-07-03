@@ -1,0 +1,1374 @@
+openapi: 3.0.1
+info:
+  title: Kartoshka API
+  description: API for Kartoshka Bank
+  version: "1.0"
+servers: 
+  - url: http://localhost:8080
+tags:
+  - name: Пользователи
+    description: Обеспечивает работу с пользователями
+  - name: Сессии
+    description: Обеспечивает работу с сессиями
+  - name: Кошельки
+    description: Обеспечивает работу с кошельками
+  - name: Счета на оплату
+    description: Обеспечивает работу со счетами на оплату
+  - name: Личные переводы
+    description: Обеспечивает рабоут с личными переводами
+paths:
+  /api/v1/users:
+    post:
+      tags:
+        - Пользователи
+      summary: Создать пользователя
+      description: Позволяет создать пользователя в системе
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserModel'
+        required: true
+      responses:
+        '200':
+          description: "Successfull operation"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponseUserDTO'
+        '400':
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponseObject'
+        '500':
+          description: "Internal server error"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponseObject'
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - Пользователи
+      summary: Получить пользователя
+      description: Позволяет получить текущего сессионного пользователя
+      responses:
+        '200':
+          description: "Successfull operation"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponseUserDTO'
+        '400':
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponseObject'
+        '404':
+          description: "Not Found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponseObject'
+        '500':
+          description: "Internal Server Error"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponseObject'
+    put:
+      security:
+        - bearerAuth: []
+      tags:
+        - Пользователи
+      summary: Обновить пользователя
+      description: Позволяет обновить текущего сессионного пользователя
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditUserModel'
+      responses:
+        '200':
+          description: "Successfull operation"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponseUserDTO'
+        '400':
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponseObject'
+        '404':
+          description: "Not Found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponseObject'
+        '500':
+          description: "Internal Server Error"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponseObject'
+  /api/v1/sessions:
+    post:
+      tags:
+        - Сессии
+      summary: Создать сессию
+      description: Позволяет создать сессию (Войти в систему)
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateSessionModel'
+        required: true
+      responses:
+        '200':
+          description: "Successfull operation"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponseTokenResponse'
+        '400':
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponseObject'
+        '500':
+          description: "Internal Server Error"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponseObject'
+  /api/v1/sessions/my:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - Сессии
+      summary: Получить текущую сессию
+      description: Позволяет получить информацию о текущей сессии
+      responses:
+        '200':
+          description: "Successfull operation (enabled - активен ли пользователь, чтобы придать сессионность jwt-токену)"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponseSessionDTO'
+        '401':
+          description: "Unauthorized"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponseObject'
+        '500':
+          description: "Internal Server Error"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponseObject'
+  /api/v1/sessions/logout:
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - Сессии
+      summary: Принудительно завершить сессию
+      description: Позволяет принудительно завершить сессию (Выйти из системы)
+      responses:
+        '200':
+          description: "Successfull operation"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponseObject'
+        '401':
+          description: "Unauthorized"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponseObject'
+        '500':
+          description: "Internal Server Error"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponseObject'
+  /api/v1/sessions/refresh:
+    post:
+      tags:
+        - Сессии
+      summary: Обновить текущую сессию
+      description: Позволяет получить новую пару токенов
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefreshSessionModel'
+        required: true
+      responses:
+        '200':
+          description: "Successfull operation"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponseTokenResponse'
+        '401':
+          description: "Unauthorized"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponseObject'
+        '500':
+          description: "Internal Server Error"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponseObject'
+  /api/v1/wallets:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - Кошельки
+      summary: Получить информацию о своём кошельке
+      description: Позволяет получить информацию о своем кошельке
+      responses:
+        '200':
+          description: "Successfull operation"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponseWalletDTO'
+        '401':
+          description: "Unauthorized"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponseObject'
+        '500':
+          description: "Internal Server Error"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponseObject'
+  /api/v1/wallets/hesoyam:
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - Кошельки
+      summary: HESOYAM - рулетка
+      description: Позволяет с 25% шансом получить на счёт 10 д.е.
+      responses:
+        '200':
+          description: "Successfull operation"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponseHesoyamDTO'
+        '401':
+          description: "Unauthorized"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponseObject'
+        '500':
+          description: "Internal Server Error"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponseObject'
+  /api/v1/bills:
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - Счета на оплату
+      summary: Создать счет на оплату
+      description: Позволяет создать счет на оплату на конкретного человека
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateBillModel'
+        required: true
+      responses:
+        '200':
+          description: "Successfull operation"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponseBillDTO'
+        '400':
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponseObject'
+        '401':
+          description: "Unauthorized"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponseObject'
+        '404':
+          description: "Not Found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponseObject'
+        '500':
+          description: "Internal Server Error"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponseObject'
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - Счета на оплату
+      summary: Получить информацию о всех своих счетах
+      description: Позволяет получить список своих счетов (отправленных/полученных)
+      parameters: 
+        - name: billFilter
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/BillFilter'
+        - name: page
+          in: query
+          required: false
+          schema:
+            minimum: 0
+            type: integer
+            default: 0
+        - name: size
+          in: query
+          required: false
+          schema:
+            minimum: 1
+            type: integer
+            default: 10
+        - name: sort
+          in: query
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+            default:
+              - createdAt,ASC
+      responses:
+        '200':
+          description: "Successfull operation"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponsePageBillDTO'
+        '400':
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponseObject'
+        '401':
+          description: "Unauthorized"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponseObject'
+        '404':
+          description: "Not Found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponseObject'
+        '500':
+          description: "Internal Server Error"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponseObject'
+  /api/v1/bills/{id}/cancel:
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - Счета на оплату
+      summary: Отменить счет на оплату
+      description: Позволяет отменить счет на оплату (Отправителю)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: "Successfull operation"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponseBillDTO'
+        '400':
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponseObject'
+        '401':
+          description: "Unauthorized"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponseObject'
+        '404':
+          description: "Not Found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponseObject'
+        '500':
+          description: "Internal Server Error"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponseObject'
+  /api/v1/bills/{id}/pay:
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - Счета на оплату
+      summary: Оплатить счет на оплату
+      description: Позволяет оплатить счет на оплату (Получателю)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: "Successfull operation"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponseBillDTO'
+        '400':
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponseObject'
+        '401':
+          description: "Unauthorized"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponseObject'
+        '404':
+          description: "Not Found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponseObject'
+        '500':
+          description: "Internal Server Error"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponseObject'
+  /api/v1/bills/{id}:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - Счета на оплату
+      summary: Получить инфомрацию о счете на оплату
+      description: Позволяет получить информацию о счете на оплату
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: "Successfull operation"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponseBillDTO'
+        '400':
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponseObject'
+        '401':
+          description: "Unauthorized"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponseObject'
+        '404':
+          description: "Not Found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponseObject'
+        '500':
+          description: "Internal Server Error"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponseObject'      
+  /api/v1/bills/oldest-unpaid:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - Счета на оплату
+      summary: Получить наибоеле давнюю неоплаченную услугу
+      description: Позволяет получить информацию о наиболее давней неоплаченной услуге
+      responses:
+        '200':
+          description: "Successfull operation"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponseBillDTO'
+        '400':
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponseObject'
+        '401':
+          description: "Unauthorized"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponseObject'
+        '500':
+          description: "Internal Server Error"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponseObject'
+  /api/v1/bills/total-debt:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - Счета на оплату
+      summary: Получить общую задолженность по счетам на оплату
+      description: Позволяет получить общую задолженность по неоплаченным счетам
+      responses:
+        '200':
+          description: "Successfull operation"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponseDebtDTO'
+        '400':
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponseObject'
+        '401':
+          description: "Unauthorized"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponseObject'
+        '500':
+          description: "Internal Server Error"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponseObject'
+  /api/v1/transfers:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - Личные переводы
+      summary: Получить список своих личных переводов
+      description: Позволяет получить список связанных с пользователем переводов
+      parameters:
+        - name: transferFilter
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/TransferFilter'
+        - name: page
+          in: query
+          required: false
+          schema:
+            minimum: 0
+            type: integer
+            default: 0
+        - name: size
+          in: query
+          required: false
+          schema:
+            minimum: 1
+            type: integer
+            default: 10
+        - name: sort
+          in: query
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+            default:
+              - createdAt, ASC
+      responses:
+        '200':
+          description: "Successfull operation"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponsePageTransferDTO'
+        '400':
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponseObject'
+        '401':
+          description: "Unauthorized"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponseObject'
+        '500':
+          description: "Internal Server Error"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponseObject'  
+    post:
+      security:
+        - bearerAuth: []
+      tags: 
+        - Личные переводы
+      summary: Перевести деньги
+      description: Позволяет совершить личный перевол (либо по номеру телефона, либо по номеру кошелька, но не чере оба сразу)
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTransferModel'
+        required: true
+      responses:
+        '200':
+          description: "Successfull operation"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponseTransferDTO'
+        '400':
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponseObject'
+        '401':
+          description: "Unauthorized"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponseObject'
+        '500':
+          description: "Internal Server Error"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponseObject'
+  /api/v1/transfers/{id}:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - Личные переводы
+      summary: Получить информацию о личном переводе
+      description: Позволяет получить информацию о личном переводе
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: "Successfull operation"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponseTransferDTO'
+        '400':
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponseObject'
+        '401':
+          description: "Unauthorized"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponseObject'
+        '500':
+          description: "Internal Server Error"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponseObject'
+            
+      
+      
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    DefaultResponseObject:
+      type: object
+      properties:
+        status:
+          type: string
+          enum:
+            - 200 OK
+            - 401 UNAUTHORIZED
+            - 403 FORBIDDEN
+            - 404 NOT_FOUND
+            - 500 INTERNAL_SERVER_ERROR
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+        data:
+          type: object
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+    CreateUserModel:
+      required:
+        - birthDate
+        - email
+        - firstName
+        - lastName
+        - phoneNumber
+        - password
+      type: object
+      properties:
+        firstName:
+          pattern: '[A-ZА-Я][a-zа-я]*'
+          type: string
+          maxLength: 50
+          example: Aleksey
+        lastName:
+          pattern: '[A-ZА-Я][a-zа-я]*'
+          type: string
+          maxLength: 50
+          example: Shumkov
+        patronymic:
+          pattern: '[A-ZА-Я][a-zа-я]*'
+          type: string
+          maxLength: 50
+          example: Sergeevich
+        phoneNumber:
+          pattern: '^((8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,10}$'
+          type: string
+          example: '+79482058492'
+        email:
+          pattern: '^(?=.{1,64}@)[A-Za-z0-9_-]+(\.[A-Za-z0-9_-]+)*@[^-][A-Za-z0-9-]+(\.[A-Za-z0-9-]+)*(\.[A-Za-z]{2,})$'
+          type: string
+          example: example@example.com
+        birthDate:
+          type: string
+          format: date
+          x-validation: isPastDate
+        password:
+          type: string
+          minLength: 8
+          maxLength: 64
+          x-validate:
+            hasLowerCase: true
+            hasUpperCase: true
+            hasNumber: true
+            hasSpecialChar: true (only !?)
+            onlyLatinChars: true
+          example: Somepass!005
+    EditUserModel:
+      required:
+        - birthDate
+        - firstName
+        - lastName
+      type: object
+      properties:
+        firstName:
+          pattern: '[A-ZА-Я][a-zа-я]*'
+          type: string
+          maxLength: 50
+          example: Aleksey
+        lastName:
+          pattern: '[A-ZА-Я][a-zа-я]*'
+          type: string
+          maxLength: 50
+          example: Shumkov
+        patronymic:
+          pattern: '[A-ZА-Я][a-zа-я]*'
+          type: string
+          maxLength: 50
+          example: Sergeevich
+        birthDate:
+          type: string
+          format: date
+          x-validation: isPastDate
+    DefaultResponseUserDTO:
+      type: object
+      properties:
+        status:
+          type: string
+          enum:
+            - 200 OK
+            - 401 UNAUTHORIZED
+            - 403 FORBIDDEN
+            - 404 NOT_FOUND
+            - 500 INTERNAL_SERVER_ERROR
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+        data:
+          $ref: '#/components/schemas/UserDTO'
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+    UserDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        firstName:
+          type: string
+        lastName:
+          type: string
+        patronymic:
+          type: string
+        phoneNumber:
+          type: string
+        email:
+          type: string
+        birthDate:
+          type: string
+          format: date
+        createdAt:
+          type: string
+          format: date-time
+        modifiedAt:
+          type: string
+          format: date-time
+        wallet:
+          $ref: '#/components/schemas/WalletDTO'
+    WalletDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        balance:
+          type: integer
+          format: int64
+    CreateSessionModel:
+      required:
+        - email
+        - password
+      type: object
+      properties:
+        email:
+          pattern: '^(?=.{1,64}@)[A-Za-z0-9_-]+(\.[A-Za-z0-9_-]+)*@[^-][A-Za-z0-9-]+(\.[A-Za-z0-9-]+)*(\.[A-Za-z]{2,})$'
+          type: string
+          example: example@example.com
+        password:
+          type: string
+          minLength: 8
+          maxLength: 64
+          x-validate:
+            hasLowerCase: true
+            hasUpperCase: true
+            hasNumber: true
+            hasSpecialChar: true (only !?)
+            onlyLatinChars: true
+          example: Somepass!005
+    DefaultResponseTokenResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          enum:
+            - 200 OK
+            - 401 UNAUTHORIZED
+            - 403 FORBIDDEN
+            - 404 NOT_FOUND
+            - 500 INTERNAL_SERVER_ERROR
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+        data:
+          $ref: '#/components/schemas/TokenResponse'
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+    TokenResponse:
+      type: object
+      properties:
+        userId:
+          type: string
+          format: uuid
+        email:
+          type: string
+        accessToken:
+          type: string
+        refreshToken:
+          type: string
+    RefreshSessionModel:
+      type: object
+      properties:
+        refreshToken:
+          type: string
+    DefaultResponseSessionDTO:
+      type: object
+      properties:
+        status:
+          type: string
+          enum:
+            - 200 OK
+            - 401 UNAUTHORIZED
+            - 403 FORBIDDEN
+            - 404 NOT_FOUND
+            - 500 INTERNAL_SERVER_ERROR
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+        data:
+          $ref: '#/components/schemas/SessionDTO'
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+    SessionDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        user:
+          $ref: '#/components/schemas/UserDTO'
+        accessToken:
+          type: string
+        refreshToken:
+          type: string
+        expiresAt:
+          type: string
+          format: date-time
+        enabled: 
+          type: boolean
+    DefaultResponseWalletDTO:
+      type: object
+      properties:
+        status:
+          type: string
+          enum:
+            - 200 OK
+            - 401 UNAUTHORIZED
+            - 403 FORBIDDEN
+            - 404 NOT_FOUND
+            - 500 INTERNAL_SERVER_ERROR
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+        data:
+          $ref: '#/components/schemas/WalletDTO'
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+    DefaultResponseHesoyamDTO:
+      type: object
+      properties:
+        status:
+          type: string
+          enum:
+            - 200 OK
+            - 401 UNAUTHORIZED
+            - 403 FORBIDDEN
+            - 404 NOT_FOUND
+            - 500 INTERNAL_SERVER_ERROR
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+        data:
+          $ref: '#/components/schemas/HesoyamDTO'
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+    HesoyamDTO:
+      type: object
+      properties:
+        won:
+          type: boolean
+    CreateBillModel:
+      required:
+        - cost
+        - recipientId
+      type: object
+      properties:
+        cost:
+          type: integer
+          format: int64
+          minimum: 1
+          description: 'Только положительное значение'
+        recipientId:
+          type: string
+          format: uuid
+        comment:
+          type: string
+          maxLength: 250
+    DefaultResponseBillDTO:
+      type: object
+      properties:
+        status:
+          type: string
+          enum:
+            - 200 OK
+            - 401 UNAUTHORIZED
+            - 403 FORBIDDEN
+            - 404 NOT_FOUND
+            - 500 INTERNAL_SERVER_ERROR
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+        data:
+          $ref: '#/components/schemas/BillDTO'
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+    BillDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        cost:
+          type: integer
+          format: int64
+        sender:
+          $ref: '#/components/schemas/UserRepresentationDTO'
+        recipient:
+          $ref: '#/components/schemas/UserRepresentationDTO'
+        comment:
+          type: string
+        billStatus:
+          type: string
+          enum:
+            - PAID
+            - UNPAID
+            - CANCELLED
+        createdAt:
+          type: string
+          format: date-time
+        modifiedAt:
+          type: string
+          format: date-time
+    BillFilter:
+      type: object
+      properties:
+        billStatus:
+          type: string
+          enum:
+            - PAID
+            - UNPAID
+            - CANCELLED
+        startDate:
+          type: string
+          format: date-time
+        endDate:
+          type: string
+          format: date-time
+        billId:
+          type: string
+          format: uuid
+    UserRepresentationDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        firstName:
+          type: string
+        lastName:
+          type: string
+        patronymic:
+          type: string
+        walletId:
+          type: string
+          format: uuid
+    DefaultResponsePageBillDTO:
+      type: object
+      properties:
+        status:
+          type: string
+          enum:
+            - 200 OK
+            - 401 UNAUTHORIZED
+            - 403 FORBIDDEN
+            - 404 NOT_FOUND
+            - 500 INTERNAL_SERVER_ERROR
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+        data:
+          $ref: '#/components/schemas/PageBillDTO'
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+    PageBillDTO:
+      type: object
+    DefaultResponseDebtDTO:
+      type: object
+      properties:
+        status:
+          type: string
+          enum:
+            - 200 OK
+            - 401 UNAUTHORIZED
+            - 403 FORBIDDEN
+            - 404 NOT_FOUND
+            - 500 INTERNAL_SERVER_ERROR
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+        data:
+          $ref: '#/components/schemas/DebtDTO'
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+    DebtDTO:
+      type: object
+      properties:
+        debt:
+          type: integer
+          format: int64
+    TransferFilter:
+      type: object
+      properties:
+        direction:
+          type: string
+          enum:
+            - INCOMING
+            - OUTGOING
+        transferStatus:
+          type: string
+          enum:
+            - PAID
+            - UNPAID
+        recipientId:
+          type: string
+          format: uuid
+    DefaultResponsePageTransferDTO:
+      type: object
+      properties:
+        status:
+          type: string
+          enum:
+            - 200 OK
+            - 401 UNAUTHORIZED
+            - 403 FORBIDDEN
+            - 404 NOT_FOUND
+            - 500 INTERNAL_SERVER_ERROR
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+        data:
+          $ref: '#/components/schemas/PageTransferDTO'
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+    PageTransferDTO:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/TransferDTO'
+    DefaultResponseTransferDTO:
+      type: object
+      properties:
+        status:
+          type: string
+          enum:
+            - 200 OK
+            - 401 UNAUTHORIZED
+            - 403 FORBIDDEN
+            - 404 NOT_FOUND
+            - 500 INTERNAL_SERVER_ERROR
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+        data:
+          $ref: '#/components/schemas/TransferDTO'
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+    TransferDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        cost:
+          type: integer
+          format: int64
+        sender:
+          $ref: '#/components/schemas/UserRepresentationDTO'
+        recipient:
+          $ref: '#/components/schemas/UserRepresentationDTO'
+        comment:
+          type: string
+        transferStatus:
+          type: string
+          enum:
+            - PAID
+            - UNPAID
+        createdAt:
+          type: string
+          format: date-time
+        modifiedAt:
+          type: string
+          format: date-time
+    CreateTransferModel:
+      required:
+        - cost
+      type: object
+      properties:
+        cost:
+          type: integer
+          format: int64
+          minimum: 0
+        phoneNumber:
+          type: string
+        walletId:
+          type: string
+          format: uuid
+        comment:
+          type: string
+      description: Один из параметров phoneNumber/walletId обязателен
+    
