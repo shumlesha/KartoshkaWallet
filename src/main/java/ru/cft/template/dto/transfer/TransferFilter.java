@@ -1,12 +1,12 @@
 package ru.cft.template.dto.transfer;
 
-import ru.cft.template.constants.enums.TransferDirection;
+import ru.cft.template.constants.enums.OperationDirection;
 import ru.cft.template.constants.enums.TransferStatus;
 
 import java.util.UUID;
 
 public record TransferFilter(
-        TransferDirection direction,
+        OperationDirection direction,
         TransferStatus transferStatus,
         UUID recipientId
 ) {

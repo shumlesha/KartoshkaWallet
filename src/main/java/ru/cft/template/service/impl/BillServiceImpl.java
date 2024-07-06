@@ -1,5 +1,6 @@
 package ru.cft.template.service.impl;
 import com.querydsl.core.types.Predicate;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -8,15 +9,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.cft.template.constants.enums.BillStatus;
+import ru.cft.template.constants.enums.OperationDirection;
 import ru.cft.template.dto.bill.BillFilter;
 import ru.cft.template.dto.bill.CreateBillModel;
 import ru.cft.template.exception.bill.*;
 import ru.cft.template.exception.user.UserNotFoundException;
 import ru.cft.template.exception.wallet.NotEnoughMoneyException;
-import ru.cft.template.models.Bill;
-import ru.cft.template.models.QBill;
-import ru.cft.template.models.User;
-import ru.cft.template.models.Wallet;
+import ru.cft.template.models.*;
 import ru.cft.template.repository.BillRepository;
 import ru.cft.template.repository.UserRepository;
 import ru.cft.template.repository.WalletRepository;
@@ -132,6 +131,7 @@ public class BillServiceImpl implements BillService {
     public Page<Bill> getBills(SessionUser sessionUser, BillFilter billFilter, Pageable pageable) {
 
         Predicate predicate = QPredicates.builder()
+                .add(billFilter.direction(), direction -> getPredicateForDirection(sessionUser, direction))
                 .add(billFilter.billStatus(), QBill.bill.billStatus::eq)
                 .add(billFilter.startDate(), QBill.bill.createdAt::after)
                 .add(billFilter.endDate(), QBill.bill.createdAt::before)
@@ -151,5 +151,21 @@ public class BillServiceImpl implements BillService {
     @Override
     public Long getTotalDebt(SessionUser sessionUser) {
         return billRepository.getTotalDebt(sessionUser.getId());
+    }
+
+    private Predicate getPredicateForDirection(SessionUser sessionUser, OperationDirection direction) {
+
+        BooleanExpression withoutDirection = QBill.bill.sender.id.eq(sessionUser.getId())
+                .or(QBill.bill.recipient.id.eq(sessionUser.getId()));
+
+        if (direction == null) {
+            return withoutDirection;
+        }
+
+        return switch (direction) {
+            case INCOMING -> QBill.bill.recipient.id.eq(sessionUser.getId());
+            case OUTGOING -> QBill.bill.sender.id.eq(sessionUser.getId());
+            default -> withoutDirection;
+        };
     }
 }

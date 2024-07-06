@@ -1,5 +1,6 @@
 package ru.cft.template.service.impl;
 import com.querydsl.core.types.Predicate;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -7,7 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.cft.template.constants.enums.TransferDirection;
+import ru.cft.template.constants.enums.OperationDirection;
 import ru.cft.template.constants.enums.TransferStatus;
 import ru.cft.template.dto.transfer.CreateTransferModel;
 import ru.cft.template.dto.transfer.TransferFilter;
@@ -141,13 +142,28 @@ public class TransferServiceImpl implements TransferService {
     @Override
     public Page<Transfer> getTransfers(SessionUser sessionUser, TransferFilter transferFilter, Pageable pageable) {
         Predicate predicate = QPredicates.builder()
-                .add(sessionUser.getId(), TransferDirection.INCOMING.equals(transferFilter.direction()) ?
-                        QTransfer.transfer.recipient.id::eq : QTransfer.transfer.sender.id::eq)
+                .add(transferFilter.direction(), direction -> getPredicateForDirection(sessionUser, direction))
                 .add(transferFilter.transferStatus(), QTransfer.transfer.transferStatus::eq)
                 .add(transferFilter.recipientId(), QTransfer.transfer.recipient.id::eq)
                 .build();
 
 
         return transferRepository.findAll(predicate, pageable);
+    }
+
+    private Predicate getPredicateForDirection(SessionUser sessionUser, OperationDirection direction) {
+
+        BooleanExpression withoutDirection = QTransfer.transfer.sender.id.eq(sessionUser.getId())
+                .or(QTransfer.transfer.recipient.id.eq(sessionUser.getId()));
+
+        if (direction == null) {
+            return withoutDirection;
+        }
+
+        return switch (direction) {
+            case INCOMING -> QTransfer.transfer.recipient.id.eq(sessionUser.getId());
+            case OUTGOING -> QTransfer.transfer.sender.id.eq(sessionUser.getId());
+            default -> withoutDirection;
+        };
     }
 }

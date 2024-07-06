@@ -1,6 +1,6 @@
 package ru.cft.template.constants.enums;
 
-public enum TransferDirection {
+public enum OperationDirection {
     INCOMING,
     OUTGOING
 }
