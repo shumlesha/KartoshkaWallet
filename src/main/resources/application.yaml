@@ -2,14 +2,30 @@ server:
     port: 8080
 
 spring:
+    application:
+      name: KartoshkaWallet
+    config:
+        import: optional:file:.env[.properties]
     datasource:
-        # По умолчанию postgresql имеет 5432 порт. Но так как подразумевается запуск через docker-compose, указан порт
-        # из docker-compose.yaml для корректной проброски. Если у вас локально установлен postgresql и вы собираетесь
-        # использовать его, то требуется поменить его на нужный
-        url: jdbc:postgresql://localhost:5430/wallet
-        username: wallet
-        password: wallet
+        url: jdbc:postgresql://${HOST}:${POSTGRES_PORT}/${POSTGRES_DB}
+        username: ${POSTGRES_USERNAME}
+        password: ${POSTGRES_PASSWORD}
+        driver-class-name: org.postgresql.Driver
+    jpa:
+        show-sql: true
+        hibernate:
+            ddl-auto: ${DDL_AUTO}
     flyway:
         enabled: true
         locations:
           - db.migration
+        url: jdbc:postgresql://${HOST}:${POSTGRES_PORT}/${POSTGRES_DB}
+        user: ${POSTGRES_USERNAME}
+        password: ${POSTGRES_PASSWORD}
+    main:
+        allow-bean-definition-overriding: true
+
+jwt:
+    secret: ${JWT_SECRET}
+    access: ${JWT_ACCESS}
+    refresh: ${JWT_REFRESH}

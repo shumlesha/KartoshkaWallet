@@ -1,0 +1,112 @@
+package ru.cft.template.controller;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+import ru.cft.template.dto.api.DefaultResponse;
+import ru.cft.template.dto.session.CreateSessionModel;
+import ru.cft.template.dto.session.RefreshSessionModel;
+import ru.cft.template.dto.session.SessionDTO;
+import ru.cft.template.dto.session.TokenResponse;
+import ru.cft.template.mapper.SessionMapper;
+import ru.cft.template.models.Session;
+import ru.cft.template.security.SessionUser;
+import ru.cft.template.service.SessionAuthService;
+import ru.cft.template.service.SessionService;
+import ru.cft.template.util.DefaultResponseBuilder;
+
+import static ru.cft.template.constants.endpoints.Endpoints.*;
+import static ru.cft.template.constants.messages.ServiceMessages.*;
+import static ru.cft.template.constants.messages.SwaggerMessages.*;
+
+
+@Slf4j
+@RestController
+@RequestMapping(SESSIONS_URL)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@RequiredArgsConstructor
+@Tag(name = SESSIONS_TAG)
+public class SessionController {
+
+    SessionService sessionService;
+    SessionMapper sessionMapper;
+    SessionAuthService sessionAuthService;
+
+    /**
+     * Создает сессию
+     *
+     * @param createSessionModel запрос на создание сессии
+     * @return dto сессии
+     */
+    @PostMapping
+    @Operation(summary = SESSIONS_CREATE_SUMMARY, description = SESSIONS_CREATE_DESCRIPTION)
+    public ResponseEntity<DefaultResponse<SessionDTO>> createSession(@Validated @RequestBody CreateSessionModel createSessionModel) {
+        SessionDTO createdSession = sessionAuthService.createSession(createSessionModel);
+
+        log.info("Created session for user: {}", createdSession.getUser().getId());
+
+        return ResponseEntity.ok(DefaultResponseBuilder.success(
+                String.format(SESSION_SUCCESSFULLY_CREATED),
+                createdSession
+        ));
+    }
+
+
+    /**
+     * Завершает сессию принудительно
+     *
+     * @param sessionUser AuthenticationPrincipal (текущий пользователь)
+     * @return Сообщение о выходе из сессии
+     */
+    @PostMapping(LOGOUT)
+    @Operation(summary = SESSIONS_LOGOUT_SUMMARY, description = SESSIONS_LOGOUT_DESCRIPTION)
+    public ResponseEntity<DefaultResponse<?>> logoutSession(@AuthenticationPrincipal SessionUser sessionUser) {
+        sessionService.logoutSession(sessionUser);
+
+        return ResponseEntity.ok(DefaultResponseBuilder.success(
+                String.format(SESSION_SUCCESSFULLY_LOGOUT)
+        ));
+    }
+
+
+    /**
+     * Получение текущий сессии
+     *
+     * @param sessionUser AuthenticationPrincipal (пользователь текущей сессии)
+     * @return dto информация о текущей сессии
+     */
+    @GetMapping
+    @Operation(summary = SESSIONS_GET_SUMMARY, description = SESSIONS_GET_DESCRIPTION)
+    public ResponseEntity<DefaultResponse<SessionDTO>> getCurrentSession(@AuthenticationPrincipal SessionUser sessionUser) {
+        SessionDTO session = sessionAuthService.getCurrentSession(sessionUser);
+
+        return ResponseEntity.ok(DefaultResponseBuilder.success(
+                String.format(SESSION_SUCCESSFULLY_RETRIEVED, sessionUser.getLastName(), sessionUser.getFirstName()),
+                session
+        ));
+    }
+
+    /**
+     * Обновление текущей сессии
+     *
+     * @param refreshSessionModel запрос на обновление сессии
+     * @return dto сессии
+     */
+    @PostMapping(REFRESH)
+    @Operation(summary = SESSIONS_REFRESH_SUMMARY, description = SESSIONS_REFRESH_DESCRIPTION)
+    public ResponseEntity<DefaultResponse<SessionDTO>> refreshSession(@RequestBody RefreshSessionModel refreshSessionModel) {
+        SessionDTO session = sessionAuthService.refreshSession(refreshSessionModel);
+
+        return ResponseEntity.ok(DefaultResponseBuilder.success(
+                String.format(SESSION_SUCCESSFULLY_REFRESHED),
+                session
+        ));
+    }
+}
