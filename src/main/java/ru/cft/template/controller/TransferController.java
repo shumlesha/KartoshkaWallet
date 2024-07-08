@@ -37,12 +37,11 @@ import static ru.cft.template.constants.messages.SwaggerMessages.*;
 @Slf4j
 @RestController
 @RequestMapping(TRANSFERS_URL)
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
 @Tag(name = TRANSFERS_TAG, description = TRANSFERS_TAG_DESCRIPTION)
 public class TransferController {
 
-    TransferService transferService;
+    private final TransferService transferService;
 
     /**
      * Отправить личный перевод

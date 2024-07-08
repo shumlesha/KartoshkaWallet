@@ -36,12 +36,11 @@ import static ru.cft.template.constants.messages.SwaggerMessages.*;
 @Slf4j
 @RestController
 @RequestMapping(BILLS_URL)
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
 @Tag(name = BILLS_TAG, description = BILLS_TAG_DESCRIPTION)
 public class BillController {
 
-    BillService billService;
+    private final BillService billService;
 
     /**
      * Создать счет на оплату

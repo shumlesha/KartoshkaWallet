@@ -28,12 +28,11 @@ import static ru.cft.template.constants.messages.SwaggerMessages.*;
 @Slf4j
 @RestController
 @RequestMapping(WALLETS_URL)
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
 @Tag(name = WALLETS_TAG)
 public class WalletController {
 
-    WalletService walletService;
+    private final WalletService walletService;
 
     /**
      * Позволяет получить свой кошелек

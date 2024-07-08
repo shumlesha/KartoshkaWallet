@@ -30,12 +30,11 @@ import static ru.cft.template.constants.messages.SwaggerMessages.*;
 @Slf4j
 @RestController
 @RequestMapping(USERS_URL)
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
 @Tag(name = USERS_TAG)
 public class UserController {
 
-    UserService userService;
+    private final UserService userService;
 
     /**
      * Создает нового пользователя

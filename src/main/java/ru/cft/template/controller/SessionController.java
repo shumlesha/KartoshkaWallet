@@ -28,13 +28,12 @@ import static ru.cft.template.constants.messages.SwaggerMessages.*;
 @Slf4j
 @RestController
 @RequestMapping(SESSIONS_URL)
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
 @Tag(name = SESSIONS_TAG)
 public class SessionController {
 
-    SessionService sessionService;
-    SessionAuthService sessionAuthService;
+    private final SessionService sessionService;
+    private final SessionAuthService sessionAuthService;
 
     /**
      * Создает сессию
