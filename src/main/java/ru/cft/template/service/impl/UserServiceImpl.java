@@ -22,12 +22,11 @@ import java.util.Optional;
 
 @Slf4j
 @Service
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-    UserRepository userRepository;
-    PasswordEncoder passwordEncoder;
-    UserMapper userMapper;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final UserMapper userMapper;
 
     @Override
     @Transactional

@@ -30,14 +30,13 @@ import java.util.UUID;
 
 
 @Service
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
 public class BillServiceImpl implements BillService {
 
-    BillRepository billRepository;
-    UserRepository userRepository;
-    WalletRepository walletRepository;
-    BillMapper billMapper;
+    private final BillRepository billRepository;
+    private final UserRepository userRepository;
+    private final WalletRepository walletRepository;
+    private final BillMapper billMapper;
 
     @Override
     @Transactional

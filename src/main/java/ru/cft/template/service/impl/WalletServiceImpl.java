@@ -16,13 +16,12 @@ import ru.cft.template.service.WalletService;
 import java.util.Random;
 
 @Service
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
 public class WalletServiceImpl implements WalletService {
 
-    WalletRepository walletRepository;
-    WalletMapper walletMapper;
-    Random random = new Random();
+    private final WalletRepository walletRepository;
+    private final WalletMapper walletMapper;
+    private final Random random = new Random();
 
     @Override
     public WalletDto getWallet(SessionUser sessionUser) {

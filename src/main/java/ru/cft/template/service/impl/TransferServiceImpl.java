@@ -34,13 +34,12 @@ import ru.cft.template.util.QPredicates;
 import java.util.UUID;
 
 @Service
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
 public class TransferServiceImpl implements TransferService {
-    TransferRepository transferRepository;
-    WalletRepository walletRepository;
-    UserRepository userRepository;
-    TransferMapper transferMapper;
+    private final TransferRepository transferRepository;
+    private final WalletRepository walletRepository;
+    private final UserRepository userRepository;
+    private final TransferMapper transferMapper;
 
     @Override
     @Transactional

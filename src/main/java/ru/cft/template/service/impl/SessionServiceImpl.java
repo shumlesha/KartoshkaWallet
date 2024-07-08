@@ -12,10 +12,9 @@ import ru.cft.template.security.SessionUser;
 import ru.cft.template.service.SessionService;
 
 @Service
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
 public class SessionServiceImpl implements SessionService {
-    SessionRepository sessionRepository;
+    private final SessionRepository sessionRepository;
 
     @Override
     @Transactional

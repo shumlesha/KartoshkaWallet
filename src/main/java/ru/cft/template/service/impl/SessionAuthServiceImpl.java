@@ -23,13 +23,12 @@ import ru.cft.template.service.SessionAuthService;
 
 @Slf4j
 @Service
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
 public class SessionAuthServiceImpl implements SessionAuthService {
-    SessionRepository sessionRepository;
-    AuthenticationManager authenticationManager;
-    JwtTokenProvider jwtTokenProvider;
-    SessionMapper sessionMapper;
+    private final SessionRepository sessionRepository;
+    private final AuthenticationManager authenticationManager;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final SessionMapper sessionMapper;
 
     @Override
     @Transactional
