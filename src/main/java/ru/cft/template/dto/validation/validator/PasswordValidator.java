@@ -45,7 +45,6 @@ public class PasswordValidator implements ConstraintValidator<Password, String> 
                 context.disableDefaultConstraintViolation();
                 context.buildConstraintViolationWithTemplate(ValidationMessages.PASSWORD_RUSSIAN_CONSTRAINT)
                         .addConstraintViolation();
-                log.error("Сработало");
                 return false;
             }
             if (!(containsExclamation || containsQuestion)) {

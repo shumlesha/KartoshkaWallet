@@ -42,7 +42,6 @@ import static ru.cft.template.constants.messages.SwaggerMessages.*;
 public class BillController {
 
     BillService billService;
-    BillMapper billMapper;
 
     /**
      * Создать счет на оплату
@@ -55,11 +54,11 @@ public class BillController {
     @Operation(summary = BILLS_CREATE_SUMMARY, description = BILLS_CREATE_DESCRIPTION)
     public ResponseEntity<DefaultResponse<BillDto>> createBill(@AuthenticationPrincipal SessionUser sessionUser,
                                                                @Validated @RequestBody CreateBillRequest createBillRequest) {
-        Bill createdBill = billService.createBill(sessionUser, createBillRequest);
+        BillDto createdBill = billService.createBill(sessionUser, createBillRequest);
 
         return ResponseEntity.ok(DefaultResponseBuilder.success(
                 String.format(BILL_SUCCESSFULLY_CREATED, createdBill.getId()),
-                billMapper.toDTO(createdBill)
+                createdBill
         ));
     }
 
@@ -75,11 +74,11 @@ public class BillController {
     @Operation(summary = BILLS_CANCEL_SUMMARY, description = BILLS_CANCEL_DESCRIPTION)
     public ResponseEntity<DefaultResponse<BillDto>> cancelBill(@AuthenticationPrincipal SessionUser sessionUser,
                                                                @PathVariable UUID id) {
-        Bill cancelledBill = billService.cancelBill(sessionUser, id);
+        BillDto cancelledBill = billService.cancelBill(sessionUser, id);
 
         return ResponseEntity.ok(DefaultResponseBuilder.success(
                 String.format(BILL_SUCCESSFULLY_CANCELED, id),
-                billMapper.toDTO(cancelledBill)
+                cancelledBill
         ));
     }
 
@@ -94,11 +93,11 @@ public class BillController {
     @Operation(summary = BILLS_PAY_SUMMARY, description = BILLS_PAY_DESCRIPTION)
     public ResponseEntity<DefaultResponse<BillDto>> payBill(@AuthenticationPrincipal SessionUser sessionUser,
                                                             @PathVariable UUID id) {
-        Bill bill = billService.payBill(sessionUser, id);
+        BillDto bill = billService.payBill(sessionUser, id);
 
         return ResponseEntity.ok(DefaultResponseBuilder.success(
                 String.format(BILL_SUCCESSFULLY_PAYED, id),
-                billMapper.toDTO(bill)
+                bill
         ));
     }
 
@@ -114,11 +113,11 @@ public class BillController {
     @Operation(summary = BILLS_GET_OWN_SUMMARY, description = BILLS_GET_OWN_DESCRIPTION)
     public ResponseEntity<DefaultResponse<BillDto>> getBill(@AuthenticationPrincipal SessionUser sessionUser,
                                                             @PathVariable UUID id) {
-        Bill bill = billService.getBill(sessionUser, id);
+        BillDto bill = billService.getBill(sessionUser, id);
 
         return ResponseEntity.ok(DefaultResponseBuilder.success(
                 String.format(BILL_SUCCESSFULLY_RETRIEVED, bill.getId()),
-                billMapper.toDTO(bill)
+                bill
         ));
     }
 
@@ -151,11 +150,11 @@ public class BillController {
     @GetMapping(BILLS_OLDEST_UNPAID)
     @Operation(summary = BILLS_GET_OLDEST_UNPAID_SUMMARY, description = BILLS_GET_OLDEST_UNPAID_DESCRIPTION)
     public ResponseEntity<DefaultResponse<BillDto>> getOldestUnpaidBill(@AuthenticationPrincipal SessionUser sessionUser) {
-        Bill bill = billService.getOldestUnpaidBill(sessionUser);
+        BillDto bill = billService.getOldestUnpaidBill(sessionUser);
 
         return ResponseEntity.ok(DefaultResponseBuilder.success(
                 String.format(BILL_SUCCESSFULLY_RETRIEVED, bill.getId()),
-                billMapper.toDTO(bill)
+                bill
         ));
     }
 
@@ -168,11 +167,11 @@ public class BillController {
     @GetMapping(BILLS_TOTAL_DEBT)
     @Operation(summary = BILLS_GET_TOTAL_DEBT_SUMMARY, description = BILLS_GET_TOTAL_DEBT_DESCRIPTION)
     public ResponseEntity<DefaultResponse<DebtDto>> getTotalDebt(@AuthenticationPrincipal SessionUser sessionUser) {
-        Long debt = billService.getTotalDebt(sessionUser);
+        DebtDto debt = billService.getTotalDebt(sessionUser);
 
         return ResponseEntity.ok(DefaultResponseBuilder.success(
-                String.format(DEBT_SUCCESSFULLY_RETRIEVED, debt),
-                new DebtDto(debt)
+                String.format(DEBT_SUCCESSFULLY_RETRIEVED, debt.getDebt()),
+                debt
         ));
     }
 }

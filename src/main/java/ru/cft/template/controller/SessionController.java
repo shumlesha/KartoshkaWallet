@@ -34,7 +34,6 @@ import static ru.cft.template.constants.messages.SwaggerMessages.*;
 public class SessionController {
 
     SessionService sessionService;
-    SessionMapper sessionMapper;
     SessionAuthService sessionAuthService;
 
     /**

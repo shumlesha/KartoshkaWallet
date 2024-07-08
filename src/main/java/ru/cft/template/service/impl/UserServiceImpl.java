@@ -8,8 +8,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.cft.template.dto.user.CreateUserRequest;
 import ru.cft.template.dto.user.EditUserRequest;
+import ru.cft.template.dto.user.UserDto;
 import ru.cft.template.exception.user.UserAlreadyExistsException;
 import ru.cft.template.exception.user.UserNotFoundException;
+import ru.cft.template.mapper.UserMapper;
 import ru.cft.template.models.User;
 import ru.cft.template.models.Wallet;
 import ru.cft.template.repository.UserRepository;
@@ -25,10 +27,11 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
     UserRepository userRepository;
     PasswordEncoder passwordEncoder;
+    UserMapper userMapper;
 
     @Override
     @Transactional
-    public User createUser(CreateUserRequest createUserRequest) {
+    public UserDto createUser(CreateUserRequest createUserRequest) {
         if (userRepository.existsByEmail(createUserRequest.getEmail())) {
             throw new UserAlreadyExistsException("email", createUserRequest.getEmail());
         }
@@ -51,13 +54,13 @@ public class UserServiceImpl implements UserService {
         wallet.setOwner(user);
         user.setWallet(wallet);
 
-        return userRepository.save(user);
+        return userMapper.toDTO(userRepository.save(user));
 
     }
 
     @Override
     @Transactional
-    public User editUser(EditUserRequest editUserRequest, SessionUser sessionUser) {
+    public UserDto editUser(EditUserRequest editUserRequest, SessionUser sessionUser) {
         log.info(editUserRequest.toString());
         User user = sessionUser.getSession().getUser();
 
@@ -66,12 +69,12 @@ public class UserServiceImpl implements UserService {
         Optional.ofNullable(editUserRequest.getPatronymic()).ifPresent(user::setPatronymic);
         Optional.ofNullable(editUserRequest.getBirthDate()).ifPresent(user::setBirthDate);
 
-        return userRepository.save(user);
+        return userMapper.toDTO(userRepository.save(user));
     }
 
     @Override
-    public User getUser(SessionUser sessionUser) {
-        return sessionUser.getSession().getUser();
+    public UserDto getUser(SessionUser sessionUser) {
+        return userMapper.toDTO(sessionUser.getSession().getUser());
     }
 
     @Override

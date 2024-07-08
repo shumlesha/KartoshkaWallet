@@ -11,9 +11,9 @@ import java.util.UUID;
 
 public interface TransferService {
 
-    Transfer sendTransfer(SessionUser sessionUser, CreateTransferRequest createTransferRequest);
+    TransferDto sendTransfer(SessionUser sessionUser, CreateTransferRequest createTransferRequest);
 
-    Transfer getTransfer(SessionUser sessionUser, UUID id);
+    TransferDto getTransfer(SessionUser sessionUser, UUID id);
 
     Page<TransferDto> getTransfers(SessionUser sessionUser, TransferFilter transferFilter, Pageable pageable);
 }

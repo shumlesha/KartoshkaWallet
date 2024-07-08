@@ -1,15 +1,16 @@
 package ru.cft.template.service;
 import ru.cft.template.dto.user.CreateUserRequest;
 import ru.cft.template.dto.user.EditUserRequest;
+import ru.cft.template.dto.user.UserDto;
 import ru.cft.template.models.User;
 import ru.cft.template.security.SessionUser;
 
 public interface UserService {
-    User createUser(CreateUserRequest createUserRequest);
+    UserDto createUser(CreateUserRequest createUserRequest);
 
-    User editUser(EditUserRequest editUserRequest, SessionUser sessionUser);
+    UserDto editUser(EditUserRequest editUserRequest, SessionUser sessionUser);
 
-    User getUser(SessionUser sessionUser);
+    UserDto getUser(SessionUser sessionUser);
 
     User getByEmail(String email);
 }

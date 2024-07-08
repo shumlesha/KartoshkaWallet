@@ -13,6 +13,7 @@ import ru.cft.template.constants.enums.OperationDirection;
 import ru.cft.template.dto.bill.BillDto;
 import ru.cft.template.dto.bill.BillFilter;
 import ru.cft.template.dto.bill.CreateBillRequest;
+import ru.cft.template.dto.bill.DebtDto;
 import ru.cft.template.exception.bill.*;
 import ru.cft.template.exception.user.UserNotFoundException;
 import ru.cft.template.exception.wallet.NotEnoughMoneyException;
@@ -40,7 +41,7 @@ public class BillServiceImpl implements BillService {
 
     @Override
     @Transactional
-    public Bill createBill(SessionUser user, CreateBillRequest createBillRequest) {
+    public BillDto createBill(SessionUser user, CreateBillRequest createBillRequest) {
 
         User recipient = userRepository.findById(createBillRequest.getRecipientId())
                 .orElseThrow(() -> new UserNotFoundException(createBillRequest.getRecipientId()));
@@ -57,12 +58,12 @@ public class BillServiceImpl implements BillService {
                 BillStatus.UNPAID
         );
 
-        return billRepository.save(bill);
+        return billMapper.toDTO(billRepository.save(bill));
     }
 
     @Override
     @Transactional
-    public Bill cancelBill(SessionUser sessionUser, UUID id) {
+    public BillDto cancelBill(SessionUser sessionUser, UUID id) {
         User sender = sessionUser.getSession().getUser();
 
         Bill bill = billRepository.findBySenderAndId(sender, id)
@@ -74,12 +75,12 @@ public class BillServiceImpl implements BillService {
 
         bill.setBillStatus(BillStatus.CANCELLED);
 
-        return billRepository.save(bill);
+        return billMapper.toDTO(billRepository.save(bill));
     }
 
     @Override
     @Transactional
-    public Bill payBill(SessionUser sessionUser, UUID id) {
+    public BillDto payBill(SessionUser sessionUser, UUID id) {
         User recipient = sessionUser.getSession().getUser();
 
         Bill bill = billRepository.findByRecipientAndId(recipient, id)
@@ -112,13 +113,13 @@ public class BillServiceImpl implements BillService {
         walletRepository.save(recipientWallet);
         walletRepository.save(senderWallet);
 
-        return billRepository.save(bill);
+        return billMapper.toDTO(billRepository.save(bill));
     }
 
 
 
     @Override
-    public Bill getBill(SessionUser sessionUser, UUID id) {
+    public BillDto getBill(SessionUser sessionUser, UUID id) {
         Bill bill = billRepository.findById(id)
                 .orElseThrow(() -> new BillNotFoundException(id));
 
@@ -128,7 +129,7 @@ public class BillServiceImpl implements BillService {
             throw new NotUserBillException(id);
         }
 
-        return bill;
+        return billMapper.toDTO(bill);
     }
 
     @Override
@@ -147,14 +148,14 @@ public class BillServiceImpl implements BillService {
     }
 
     @Override
-    public Bill getOldestUnpaidBill(SessionUser sessionUser) {
-        return billRepository.findTopByRecipientAndBillStatusOrderByCreatedAtAsc(sessionUser.getSession().getUser(),
-                BillStatus.UNPAID).orElseThrow(NoUnpaidBillsException::new);
+    public BillDto getOldestUnpaidBill(SessionUser sessionUser) {
+        return billMapper.toDTO(billRepository.findTopByRecipientAndBillStatusOrderByCreatedAtAsc(sessionUser.getSession().getUser(),
+                BillStatus.UNPAID).orElseThrow(NoUnpaidBillsException::new));
     }
 
     @Override
-    public Long getTotalDebt(SessionUser sessionUser) {
-        return billRepository.getTotalDebt(sessionUser.getId());
+    public DebtDto getTotalDebt(SessionUser sessionUser) {
+        return new DebtDto(billRepository.getTotalDebt(sessionUser.getId()));
     }
 
     private Predicate getPredicateForDirection(SessionUser sessionUser, OperationDirection direction) {

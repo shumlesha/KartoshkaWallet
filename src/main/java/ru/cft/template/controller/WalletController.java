@@ -15,8 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.cft.template.dto.api.DefaultResponse;
 import ru.cft.template.dto.wallet.HesoyamDto;
 import ru.cft.template.dto.wallet.WalletDto;
-import ru.cft.template.mapper.WalletMapper;
-import ru.cft.template.models.Wallet;
 import ru.cft.template.security.SessionUser;
 import ru.cft.template.service.WalletService;
 import ru.cft.template.util.DefaultResponseBuilder;
@@ -36,7 +34,6 @@ import static ru.cft.template.constants.messages.SwaggerMessages.*;
 public class WalletController {
 
     WalletService walletService;
-    WalletMapper walletMapper;
 
     /**
      * Позволяет получить свой кошелек
@@ -48,11 +45,11 @@ public class WalletController {
     @Operation(summary = WALLETS_GET_SUMMARY, description = WALLETS_GET_DESCRIPTION)
     public ResponseEntity<DefaultResponse<WalletDto>> getWallet(@AuthenticationPrincipal SessionUser sessionUser) {
 
-        Wallet wallet = walletService.getWallet(sessionUser);
+        WalletDto wallet = walletService.getWallet(sessionUser);
 
         return ResponseEntity.ok(DefaultResponseBuilder.success(
-            String.format(WALLET_SUCCESSFULLY_RETRIEVED, wallet.getId()),
-            walletMapper.toDTO(wallet)
+                String.format(WALLET_SUCCESSFULLY_RETRIEVED, wallet.getId()),
+                wallet
         ));
     }
 
@@ -66,11 +63,11 @@ public class WalletController {
     @PostMapping(HESOYAM)
     @Operation(summary = WALLETS_HESOYAM_SUMMARY, description = WALLETS_HESOYAM_DESCRIPTION)
     public ResponseEntity<DefaultResponse<HesoyamDto>> hesoyam(@AuthenticationPrincipal SessionUser sessionUser) {
-        boolean lucky = walletService.hesoyam(sessionUser);
+        HesoyamDto lucky = walletService.hesoyam(sessionUser);
 
         return ResponseEntity.ok(DefaultResponseBuilder.success(
-                String.format(lucky ? WALLET_LUCKY_MESSAGE : WALLET_UNLUCKY_MESSAGE),
-                new HesoyamDto(lucky)
+                String.format(lucky.isWon() ? WALLET_LUCKY_MESSAGE : WALLET_UNLUCKY_MESSAGE),
+                lucky
         ));
     }
 

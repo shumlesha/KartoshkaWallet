@@ -36,7 +36,6 @@ import static ru.cft.template.constants.messages.SwaggerMessages.*;
 public class UserController {
 
     UserService userService;
-    UserMapper userMapper;
 
     /**
      * Создает нового пользователя
@@ -47,12 +46,12 @@ public class UserController {
     @PostMapping
     @Operation(summary = USERS_CREATE_SUMMARY, description = USERS_CREATE_DESCRIPTION)
     public ResponseEntity<DefaultResponse<UserDto>> createUser(@Validated @RequestBody CreateUserRequest createUserRequest) {
-        User createdUser = userService.createUser(createUserRequest);
+        UserDto createdUser = userService.createUser(createUserRequest);
 
 
         return ResponseEntity.ok(DefaultResponseBuilder.success(
                 String.format(USER_SUCCESSFULLY_CREATED, createdUser.getId()),
-                userMapper.toDTO(createdUser)
+                createdUser
         ));
     }
 
@@ -67,12 +66,12 @@ public class UserController {
     @Operation(summary = USERS_UPDATE_SUMMARY, description = USERS_UPDATE_DESCRIPTION)
     public ResponseEntity<DefaultResponse<UserDto>> editUser(@Validated @RequestBody EditUserRequest editUserRequest,
                                                              @AuthenticationPrincipal SessionUser sessionUser) {
-        User editedUser = userService.editUser(editUserRequest, sessionUser);
+        UserDto editedUser = userService.editUser(editUserRequest, sessionUser);
 
 
         return ResponseEntity.ok(DefaultResponseBuilder.success(
                 String.format(USER_SUCCESSFULLY_UPDATED, editedUser.getId()),
-                userMapper.toDTO(editedUser)
+                editedUser
         ));
     }
 
@@ -85,10 +84,10 @@ public class UserController {
     @GetMapping
     @Operation(summary = USERS_GET_SUMMARY, description = USERS_GET_DESCRIPTION)
     public ResponseEntity<DefaultResponse<UserDto>> getUser(@AuthenticationPrincipal SessionUser sessionUser) {
-        User user = userService.getUser(sessionUser);
+        UserDto user = userService.getUser(sessionUser);
         return ResponseEntity.ok(DefaultResponseBuilder.success(
                 String.format(USER_SUCCESSFULLY_RETRIEVED, user.getId()),
-                userMapper.toDTO(user)
+                user
         ));
     }
 

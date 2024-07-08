@@ -43,7 +43,6 @@ import static ru.cft.template.constants.messages.SwaggerMessages.*;
 public class TransferController {
 
     TransferService transferService;
-    TransferMapper transferMapper;
 
     /**
      * Отправить личный перевод
@@ -56,11 +55,11 @@ public class TransferController {
     @Operation(summary = TRANSFERS_SEND_SUMMARY, description = TRANSFERS_SEND_DESCRIPTION)
     public ResponseEntity<DefaultResponse<TransferDto>> sendTransfer(@AuthenticationPrincipal SessionUser sessionUser,
                                                                      @Validated @RequestBody CreateTransferRequest createTransferRequest) {
-        Transfer transfer = transferService.sendTransfer(sessionUser, createTransferRequest);
+        TransferDto transfer = transferService.sendTransfer(sessionUser, createTransferRequest);
 
         return ResponseEntity.ok(DefaultResponseBuilder.success(
                 String.format(TRANSFER_SUCCESSFULLY_SENT),
-                transferMapper.toDTO(transfer)
+                transfer
         ));
     }
 
@@ -75,11 +74,11 @@ public class TransferController {
     @Operation(summary = TRANSFERS_GET_OWN_SUMMARY, description = TRANSFERS_GET_OWN_DESCRIPTION)
     public ResponseEntity<DefaultResponse<TransferDto>> getBill(@AuthenticationPrincipal SessionUser sessionUser,
                                                                 @PathVariable UUID id) {
-        Transfer transfer  = transferService.getTransfer(sessionUser, id);
+        TransferDto transfer  = transferService.getTransfer(sessionUser, id);
 
         return ResponseEntity.ok(DefaultResponseBuilder.success(
                 String.format(TRANSFER_SUCCESSFULLY_RETRIEVED, transfer.getId()),
-                transferMapper.toDTO(transfer)
+                transfer
         ));
     }
 

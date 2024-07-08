@@ -4,6 +4,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.cft.template.dto.wallet.HesoyamDto;
+import ru.cft.template.dto.wallet.WalletDto;
+import ru.cft.template.mapper.WalletMapper;
 import ru.cft.template.models.User;
 import ru.cft.template.models.Wallet;
 import ru.cft.template.repository.WalletRepository;
@@ -18,21 +21,22 @@ import java.util.Random;
 public class WalletServiceImpl implements WalletService {
 
     WalletRepository walletRepository;
+    WalletMapper walletMapper;
     Random random = new Random();
 
     @Override
-    public Wallet getWallet(SessionUser sessionUser) {
+    public WalletDto getWallet(SessionUser sessionUser) {
         User user = sessionUser.getSession().getUser();
 
-        return walletRepository.findByOwner(user);
+        return walletMapper.toDTO(walletRepository.findByOwner(user));
     }
 
     @Override
     @Transactional
-    public boolean hesoyam(SessionUser sessionUser) {
+    public HesoyamDto hesoyam(SessionUser sessionUser) {
         boolean lucky = random.nextDouble() < 0.25;
 
-        Wallet wallet = getWallet(sessionUser);
+        Wallet wallet = sessionUser.getSession().getUser().getWallet();
         Long balance = wallet.getBalance();
 
         if (lucky) {
@@ -40,6 +44,6 @@ public class WalletServiceImpl implements WalletService {
             walletRepository.save(wallet);
         }
 
-        return lucky;
+        return new HesoyamDto(lucky);
     }
 }

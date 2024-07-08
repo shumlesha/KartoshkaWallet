@@ -44,7 +44,7 @@ public class TransferServiceImpl implements TransferService {
 
     @Override
     @Transactional
-    public Transfer sendTransfer(SessionUser sessionUser, CreateTransferRequest createTransferRequest) {
+    public TransferDto sendTransfer(SessionUser sessionUser, CreateTransferRequest createTransferRequest) {
         User fromUser = sessionUser.getSession().getUser();
         Wallet fromUserWallet = fromUser.getWallet();
         Long cost = createTransferRequest.getCost();
@@ -68,7 +68,7 @@ public class TransferServiceImpl implements TransferService {
     }
 
 
-    private Transfer sendTransferByWalletId(SessionUser sessionUser, CreateTransferRequest createTransferRequest) {
+    private TransferDto sendTransferByWalletId(SessionUser sessionUser, CreateTransferRequest createTransferRequest) {
         UUID walletId = createTransferRequest.getWalletId();
         Long cost = createTransferRequest.getCost();
 
@@ -93,10 +93,10 @@ public class TransferServiceImpl implements TransferService {
         walletRepository.save(fromUserWallet);
         walletRepository.save(toUserWallet);
 
-        return transferRepository.save(transfer);
+        return transferMapper.toDTO(transferRepository.save(transfer));
     }
 
-    private Transfer sendTransferByPhoneNumber(SessionUser sessionUser, CreateTransferRequest createTransferRequest) {
+    private TransferDto sendTransferByPhoneNumber(SessionUser sessionUser, CreateTransferRequest createTransferRequest) {
 
         String phoneNumber = createTransferRequest.getPhoneNumber();
 
@@ -124,12 +124,12 @@ public class TransferServiceImpl implements TransferService {
         walletRepository.save(fromUserWallet);
         walletRepository.save(toUserWallet);
 
-        return transferRepository.save(transfer);
+        return transferMapper.toDTO(transferRepository.save(transfer));
 
     }
 
     @Override
-    public Transfer getTransfer(SessionUser sessionUser, UUID id) {
+    public TransferDto getTransfer(SessionUser sessionUser, UUID id) {
         Transfer transfer = transferRepository.findById(id)
                 .orElseThrow(() -> new TransferNotFoundException(id));
 
@@ -139,7 +139,7 @@ public class TransferServiceImpl implements TransferService {
             throw new NotUserTransferException(id);
         }
 
-        return transfer;
+        return transferMapper.toDTO(transfer);
     }
 
     @Override
