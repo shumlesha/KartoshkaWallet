@@ -12,9 +12,9 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.cft.template.dto.api.DefaultResponse;
-import ru.cft.template.dto.user.CreateUserModel;
-import ru.cft.template.dto.user.EditUserModel;
-import ru.cft.template.dto.user.UserDTO;
+import ru.cft.template.dto.user.CreateUserRequest;
+import ru.cft.template.dto.user.EditUserRequest;
+import ru.cft.template.dto.user.UserDto;
 
 import ru.cft.template.mapper.UserMapper;
 import ru.cft.template.models.User;
@@ -41,13 +41,13 @@ public class UserController {
     /**
      * Создает нового пользователя
      *
-     * @param createUserModel Модель создания пользователя
+     * @param createUserRequest Модель создания пользователя
      * @return dto - (UserDTO) Созданный пользователь
      */
     @PostMapping
     @Operation(summary = USERS_CREATE_SUMMARY, description = USERS_CREATE_DESCRIPTION)
-    public ResponseEntity<DefaultResponse<UserDTO>> createUser(@Validated @RequestBody CreateUserModel createUserModel) {
-        User createdUser = userService.createUser(createUserModel);
+    public ResponseEntity<DefaultResponse<UserDto>> createUser(@Validated @RequestBody CreateUserRequest createUserRequest) {
+        User createdUser = userService.createUser(createUserRequest);
 
 
         return ResponseEntity.ok(DefaultResponseBuilder.success(
@@ -60,16 +60,15 @@ public class UserController {
     /**
      * Обновляет текущего пользователя
      *
-     * @param editUserModel Модель обновления текущего пользователя
+     * @param editUserRequest Модель обновления текущего пользователя
      * @return dto - Скорректированный пользователь
      */
     @PatchMapping
     @Operation(summary = USERS_UPDATE_SUMMARY, description = USERS_UPDATE_DESCRIPTION)
-    public ResponseEntity<DefaultResponse<UserDTO>> editUser(@Validated @RequestBody EditUserModel editUserModel,
+    public ResponseEntity<DefaultResponse<UserDto>> editUser(@Validated @RequestBody EditUserRequest editUserRequest,
                                                              @AuthenticationPrincipal SessionUser sessionUser) {
-        User editedUser = userService.editUser(editUserModel, sessionUser);
+        User editedUser = userService.editUser(editUserRequest, sessionUser);
 
-        log.info("Edited user with id: {}", editedUser.getId());
 
         return ResponseEntity.ok(DefaultResponseBuilder.success(
                 String.format(USER_SUCCESSFULLY_UPDATED, editedUser.getId()),
@@ -85,7 +84,7 @@ public class UserController {
      */
     @GetMapping
     @Operation(summary = USERS_GET_SUMMARY, description = USERS_GET_DESCRIPTION)
-    public ResponseEntity<DefaultResponse<UserDTO>> getUser(@AuthenticationPrincipal SessionUser sessionUser) {
+    public ResponseEntity<DefaultResponse<UserDto>> getUser(@AuthenticationPrincipal SessionUser sessionUser) {
         User user = userService.getUser(sessionUser);
         return ResponseEntity.ok(DefaultResponseBuilder.success(
                 String.format(USER_SUCCESSFULLY_RETRIEVED, user.getId()),

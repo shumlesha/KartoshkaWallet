@@ -1,4 +1,4 @@
-package ru.cft.template.dto.wallet;
+package ru.cft.template.dto.bill;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,6 +7,6 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class HesoyamDTO {
-    private boolean won;
+public class DebtDto {
+    private Long debt;
 }

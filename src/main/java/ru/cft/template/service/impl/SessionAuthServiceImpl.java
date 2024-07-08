@@ -9,9 +9,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.cft.template.dto.session.CreateSessionModel;
-import ru.cft.template.dto.session.RefreshSessionModel;
-import ru.cft.template.dto.session.SessionDTO;
+import ru.cft.template.dto.session.CreateSessionRequest;
+import ru.cft.template.dto.session.RefreshSessionRequest;
+import ru.cft.template.dto.session.SessionDto;
 import ru.cft.template.dto.session.TokenResponse;
 import ru.cft.template.exception.token.InvalidRefreshTokenException;
 import ru.cft.template.mapper.SessionMapper;
@@ -33,12 +33,12 @@ public class SessionAuthServiceImpl implements SessionAuthService {
 
     @Override
     @Transactional
-    public SessionDTO createSession(CreateSessionModel createSessionModel) {
+    public SessionDto createSession(CreateSessionRequest createSessionRequest) {
 
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        createSessionModel.getEmail(),
-                        createSessionModel.getPassword()
+                        createSessionRequest.getEmail(),
+                        createSessionRequest.getPassword()
                 )
         );
         SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -52,7 +52,7 @@ public class SessionAuthServiceImpl implements SessionAuthService {
     }
 
     @Override
-    public SessionDTO getCurrentSession(SessionUser sessionUser) {
+    public SessionDto getCurrentSession(SessionUser sessionUser) {
         Session session = sessionUser.getSession();
         log.info("All good!");
         return sessionMapper.toDTO(session, jwtTokenProvider.getExpirationDate(session.getAccessToken()));
@@ -60,8 +60,8 @@ public class SessionAuthServiceImpl implements SessionAuthService {
 
     @Override
     @Transactional
-    public SessionDTO refreshSession(RefreshSessionModel refreshSessionModel) {
-        Session session = sessionRepository.findByRefreshToken(refreshSessionModel.getRefreshToken())
+    public SessionDto refreshSession(RefreshSessionRequest refreshSessionRequest) {
+        Session session = sessionRepository.findByRefreshToken(refreshSessionRequest.getRefreshToken())
                 .orElseThrow(InvalidRefreshTokenException::new);
 
         TokenResponse tokenResponse = jwtTokenProvider.refreshUserTokens(session.getRefreshToken(), session.getUser());

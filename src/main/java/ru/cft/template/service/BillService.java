@@ -1,15 +1,16 @@
 package ru.cft.template.service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import ru.cft.template.dto.bill.BillDto;
 import ru.cft.template.dto.bill.BillFilter;
-import ru.cft.template.dto.bill.CreateBillModel;
+import ru.cft.template.dto.bill.CreateBillRequest;
 import ru.cft.template.models.Bill;
 import ru.cft.template.security.SessionUser;
 
 import java.util.UUID;
 
 public interface BillService {
-    Bill createBill(SessionUser user, CreateBillModel createBillModel);
+    Bill createBill(SessionUser user, CreateBillRequest createBillRequest);
 
     Bill cancelBill(SessionUser sessionUser, UUID id);
 
@@ -17,7 +18,7 @@ public interface BillService {
 
     Bill getBill(SessionUser sessionUser, UUID id);
 
-    Page<Bill> getBills(SessionUser sessionUser, BillFilter billFilter, Pageable pageable);
+    Page<BillDto> getBills(SessionUser sessionUser, BillFilter billFilter, Pageable pageable);
 
     Bill getOldestUnpaidBill(SessionUser sessionUser);
 

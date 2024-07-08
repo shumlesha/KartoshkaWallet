@@ -29,3 +29,25 @@ jwt:
     secret: ${JWT_SECRET}
     access: ${JWT_ACCESS}
     refresh: ${JWT_REFRESH}
+
+
+management:
+    endpoints:
+        web:
+            exposure:
+                include: health,info,prometheus
+    endpoint:
+        health:
+            show-details: ALWAYS
+        prometheus:
+            enabled: true
+    prometheus:
+        metrics:
+            export:
+                enabled: true
+    metrics:
+        distribution:
+            percentiles-histogram:
+                "[http.server.requests]": true
+        enable:
+          jvm: true

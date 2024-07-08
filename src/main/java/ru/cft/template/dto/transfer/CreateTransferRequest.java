@@ -16,7 +16,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @PaymentData
-public class CreateTransferModel {
+public class CreateTransferRequest {
     @NotNull(message = ValidationMessages.COST_NOTNULL_REQUIRED)
     @Positive(message = ValidationMessages.COST_ONLY_POSITIVE_REQUIRED)
     @Digits(integer = 9, fraction = 0, message = ValidationMessages.COST_DIGITS_CONSTRAINT)

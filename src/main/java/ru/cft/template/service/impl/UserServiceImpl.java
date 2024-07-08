@@ -6,8 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.cft.template.dto.user.CreateUserModel;
-import ru.cft.template.dto.user.EditUserModel;
+import ru.cft.template.dto.user.CreateUserRequest;
+import ru.cft.template.dto.user.EditUserRequest;
 import ru.cft.template.exception.user.UserAlreadyExistsException;
 import ru.cft.template.exception.user.UserNotFoundException;
 import ru.cft.template.models.User;
@@ -28,24 +28,24 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public User createUser(CreateUserModel createUserModel) {
-        if (userRepository.existsByEmail(createUserModel.getEmail())) {
-            throw new UserAlreadyExistsException("email", createUserModel.getEmail());
+    public User createUser(CreateUserRequest createUserRequest) {
+        if (userRepository.existsByEmail(createUserRequest.getEmail())) {
+            throw new UserAlreadyExistsException("email", createUserRequest.getEmail());
         }
 
-        if (userRepository.existsByPhoneNumber(createUserModel.getPhoneNumber())) {
-            throw new UserAlreadyExistsException("phoneNumber", createUserModel.getPhoneNumber());
+        if (userRepository.existsByPhoneNumber(createUserRequest.getPhoneNumber())) {
+            throw new UserAlreadyExistsException("phoneNumber", createUserRequest.getPhoneNumber());
         }
 
 
         User user = new User();
-        user.setFirstName(createUserModel.getFirstName());
-        user.setLastName(createUserModel.getLastName());
-        user.setPatronymic(createUserModel.getPatronymic());
-        user.setPhoneNumber(createUserModel.getPhoneNumber());
-        user.setEmail(createUserModel.getEmail());
-        user.setBirthDate(createUserModel.getBirthDate());
-        user.setPassword(passwordEncoder.encode(createUserModel.getPassword()));
+        user.setFirstName(createUserRequest.getFirstName());
+        user.setLastName(createUserRequest.getLastName());
+        user.setPatronymic(createUserRequest.getPatronymic());
+        user.setPhoneNumber(createUserRequest.getPhoneNumber());
+        user.setEmail(createUserRequest.getEmail());
+        user.setBirthDate(createUserRequest.getBirthDate());
+        user.setPassword(passwordEncoder.encode(createUserRequest.getPassword()));
 
         Wallet wallet = new Wallet();
         wallet.setOwner(user);
@@ -57,14 +57,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public User editUser(EditUserModel editUserModel, SessionUser sessionUser) {
-        log.info(editUserModel.toString());
+    public User editUser(EditUserRequest editUserRequest, SessionUser sessionUser) {
+        log.info(editUserRequest.toString());
         User user = sessionUser.getSession().getUser();
 
-        Optional.ofNullable(editUserModel.getFirstName()).ifPresent(user::setFirstName);
-        Optional.ofNullable(editUserModel.getLastName()).ifPresent(user::setLastName);
-        Optional.ofNullable(editUserModel.getPatronymic()).ifPresent(user::setPatronymic);
-        Optional.ofNullable(editUserModel.getBirthDate()).ifPresent(user::setBirthDate);
+        Optional.ofNullable(editUserRequest.getFirstName()).ifPresent(user::setFirstName);
+        Optional.ofNullable(editUserRequest.getLastName()).ifPresent(user::setLastName);
+        Optional.ofNullable(editUserRequest.getPatronymic()).ifPresent(user::setPatronymic);
+        Optional.ofNullable(editUserRequest.getBirthDate()).ifPresent(user::setBirthDate);
 
         return userRepository.save(user);
     }

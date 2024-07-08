@@ -10,11 +10,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.cft.template.constants.enums.BillStatus;
 import ru.cft.template.constants.enums.OperationDirection;
+import ru.cft.template.dto.bill.BillDto;
 import ru.cft.template.dto.bill.BillFilter;
-import ru.cft.template.dto.bill.CreateBillModel;
+import ru.cft.template.dto.bill.CreateBillRequest;
 import ru.cft.template.exception.bill.*;
 import ru.cft.template.exception.user.UserNotFoundException;
 import ru.cft.template.exception.wallet.NotEnoughMoneyException;
+import ru.cft.template.mapper.BillMapper;
 import ru.cft.template.models.*;
 import ru.cft.template.repository.BillRepository;
 import ru.cft.template.repository.UserRepository;
@@ -34,24 +36,26 @@ public class BillServiceImpl implements BillService {
     BillRepository billRepository;
     UserRepository userRepository;
     WalletRepository walletRepository;
+    BillMapper billMapper;
 
     @Override
     @Transactional
-    public Bill createBill(SessionUser user, CreateBillModel createBillModel) {
+    public Bill createBill(SessionUser user, CreateBillRequest createBillRequest) {
 
-        User recipient = userRepository.findById(createBillModel.getRecipientId())
-                .orElseThrow(() -> new UserNotFoundException(createBillModel.getRecipientId()));
+        User recipient = userRepository.findById(createBillRequest.getRecipientId())
+                .orElseThrow(() -> new UserNotFoundException(createBillRequest.getRecipientId()));
 
         if (recipient.getId().equals(user.getId())) {
             throw new SameUserBillException();
         }
 
-        Bill bill = new Bill();
-        bill.setCost(createBillModel.getCost());
-        bill.setSender(user.getSession().getUser());
-        bill.setRecipient(recipient);
-        bill.setComment(createBillModel.getComment());
-        bill.setBillStatus(BillStatus.UNPAID);
+        Bill bill = new Bill(
+                createBillRequest.getCost(),
+                user.getSession().getUser(),
+                recipient,
+                createBillRequest.getComment(),
+                BillStatus.UNPAID
+        );
 
         return billRepository.save(bill);
     }
@@ -128,7 +132,7 @@ public class BillServiceImpl implements BillService {
     }
 
     @Override
-    public Page<Bill> getBills(SessionUser sessionUser, BillFilter billFilter, Pageable pageable) {
+    public Page<BillDto> getBills(SessionUser sessionUser, BillFilter billFilter, Pageable pageable) {
 
         Predicate predicate = QPredicates.builder()
                 .add(billFilter.direction(), direction -> getPredicateForDirection(sessionUser, direction))
@@ -139,7 +143,7 @@ public class BillServiceImpl implements BillService {
                 .build();
 
 
-        return billRepository.findAll(predicate, pageable);
+        return billRepository.findAll(predicate, pageable).map(billMapper::toDTO);
     }
 
     @Override

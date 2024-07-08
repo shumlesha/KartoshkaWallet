@@ -1,10 +1,10 @@
-package ru.cft.template.dto.transfer;
+package ru.cft.template.dto.bill;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.cft.template.constants.enums.TransferStatus;
-import ru.cft.template.dto.user.UserRepresentationDTO;
+import ru.cft.template.constants.enums.BillStatus;
+import ru.cft.template.dto.user.UserRepresentationDto;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -12,13 +12,13 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class TransferDTO {
+public class BillDto {
     private UUID id;
     private Long cost;
-    private UserRepresentationDTO sender;
-    private UserRepresentationDTO recipient;
+    private UserRepresentationDto sender;
+    private UserRepresentationDto recipient;
     private String comment;
-    private TransferStatus transferStatus;
+    private BillStatus billStatus;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
 }

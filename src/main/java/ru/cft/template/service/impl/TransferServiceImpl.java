@@ -10,7 +10,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.cft.template.constants.enums.OperationDirection;
 import ru.cft.template.constants.enums.TransferStatus;
-import ru.cft.template.dto.transfer.CreateTransferModel;
+import ru.cft.template.dto.transfer.CreateTransferRequest;
+import ru.cft.template.dto.transfer.TransferDto;
 import ru.cft.template.dto.transfer.TransferFilter;
 import ru.cft.template.exception.transfer.NotUserTransferException;
 import ru.cft.template.exception.transfer.SameUserTransferException;
@@ -18,6 +19,7 @@ import ru.cft.template.exception.transfer.TransferNotFoundException;
 import ru.cft.template.exception.user.UserNotFoundByPhoneException;
 import ru.cft.template.exception.wallet.NotEnoughMoneyException;
 import ru.cft.template.exception.wallet.WalletNotFoundException;
+import ru.cft.template.mapper.TransferMapper;
 import ru.cft.template.models.QTransfer;
 import ru.cft.template.models.Transfer;
 import ru.cft.template.models.User;
@@ -38,16 +40,17 @@ public class TransferServiceImpl implements TransferService {
     TransferRepository transferRepository;
     WalletRepository walletRepository;
     UserRepository userRepository;
+    TransferMapper transferMapper;
 
     @Override
     @Transactional
-    public Transfer sendTransfer(SessionUser sessionUser, CreateTransferModel createTransferModel) {
+    public Transfer sendTransfer(SessionUser sessionUser, CreateTransferRequest createTransferRequest) {
         User fromUser = sessionUser.getSession().getUser();
         Wallet fromUserWallet = fromUser.getWallet();
-        Long cost = createTransferModel.getCost();
+        Long cost = createTransferRequest.getCost();
 
-        if (fromUserWallet.getId().equals(createTransferModel.getWalletId()) ||
-            fromUser.getPhoneNumber().equals(createTransferModel.getPhoneNumber())) {
+        if (fromUserWallet.getId().equals(createTransferRequest.getWalletId()) ||
+            fromUser.getPhoneNumber().equals(createTransferRequest.getPhoneNumber())) {
             throw new SameUserTransferException();
         }
 
@@ -55,19 +58,19 @@ public class TransferServiceImpl implements TransferService {
             throw new NotEnoughMoneyException(cost-fromUserWallet.getBalance());
         }
 
-        Object paymentInfo = createTransferModel.getWalletId() != null ? createTransferModel.getWalletId() : createTransferModel.getPhoneNumber();
+        Object paymentInfo = createTransferRequest.getWalletId() != null ? createTransferRequest.getWalletId() : createTransferRequest.getPhoneNumber();
 
         return switch (paymentInfo) {
-            case UUID walletId -> sendTransferByWalletId(sessionUser, createTransferModel);
-            case String phoneNumber -> sendTransferByPhoneNumber(sessionUser, createTransferModel);
+            case UUID walletId -> sendTransferByWalletId(sessionUser, createTransferRequest);
+            case String phoneNumber -> sendTransferByPhoneNumber(sessionUser, createTransferRequest);
             default -> throw new IllegalArgumentException();
         };
     }
 
 
-    private Transfer sendTransferByWalletId(SessionUser sessionUser, CreateTransferModel createTransferModel) {
-        UUID walletId = createTransferModel.getWalletId();
-        Long cost = createTransferModel.getCost();
+    private Transfer sendTransferByWalletId(SessionUser sessionUser, CreateTransferRequest createTransferRequest) {
+        UUID walletId = createTransferRequest.getWalletId();
+        Long cost = createTransferRequest.getCost();
 
         Wallet toUserWallet = walletRepository.findById(walletId)
                 .orElseThrow(() -> new WalletNotFoundException(walletId));
@@ -80,7 +83,7 @@ public class TransferServiceImpl implements TransferService {
         transfer.setCost(cost);
         transfer.setSender(fromUser);
         transfer.setRecipient(toUserWallet.getOwner());
-        transfer.setComment(createTransferModel.getComment());
+        transfer.setComment(createTransferRequest.getComment());
         transfer.setTransferStatus(TransferStatus.PAID);
 
 
@@ -93,9 +96,9 @@ public class TransferServiceImpl implements TransferService {
         return transferRepository.save(transfer);
     }
 
-    private Transfer sendTransferByPhoneNumber(SessionUser sessionUser, CreateTransferModel createTransferModel) {
+    private Transfer sendTransferByPhoneNumber(SessionUser sessionUser, CreateTransferRequest createTransferRequest) {
 
-        String phoneNumber = createTransferModel.getPhoneNumber();
+        String phoneNumber = createTransferRequest.getPhoneNumber();
 
         User fromUser = sessionUser.getSession().getUser();
         Wallet fromUserWallet = fromUser.getWallet();
@@ -105,13 +108,13 @@ public class TransferServiceImpl implements TransferService {
         Wallet toUserWallet = toUser.getWallet();
 
 
-        Long cost = createTransferModel.getCost();
+        Long cost = createTransferRequest.getCost();
 
         Transfer transfer = new Transfer();
         transfer.setCost(cost);
         transfer.setSender(fromUser);
         transfer.setRecipient(toUser);
-        transfer.setComment(createTransferModel.getComment());
+        transfer.setComment(createTransferRequest.getComment());
         transfer.setTransferStatus(TransferStatus.PAID);
 
 
@@ -140,7 +143,7 @@ public class TransferServiceImpl implements TransferService {
     }
 
     @Override
-    public Page<Transfer> getTransfers(SessionUser sessionUser, TransferFilter transferFilter, Pageable pageable) {
+    public Page<TransferDto> getTransfers(SessionUser sessionUser, TransferFilter transferFilter, Pageable pageable) {
         Predicate predicate = QPredicates.builder()
                 .add(transferFilter.direction(), direction -> getPredicateForDirection(sessionUser, direction))
                 .add(transferFilter.transferStatus(), QTransfer.transfer.transferStatus::eq)
@@ -148,7 +151,7 @@ public class TransferServiceImpl implements TransferService {
                 .build();
 
 
-        return transferRepository.findAll(predicate, pageable);
+        return transferRepository.findAll(predicate, pageable).map(transferMapper::toDTO);
     }
 
     private Predicate getPredicateForDirection(SessionUser sessionUser, OperationDirection direction) {

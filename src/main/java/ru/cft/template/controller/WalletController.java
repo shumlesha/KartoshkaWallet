@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.cft.template.dto.api.DefaultResponse;
-import ru.cft.template.dto.wallet.HesoyamDTO;
-import ru.cft.template.dto.wallet.WalletDTO;
+import ru.cft.template.dto.wallet.HesoyamDto;
+import ru.cft.template.dto.wallet.WalletDto;
 import ru.cft.template.mapper.WalletMapper;
 import ru.cft.template.models.Wallet;
 import ru.cft.template.security.SessionUser;
@@ -46,7 +46,7 @@ public class WalletController {
      */
     @GetMapping
     @Operation(summary = WALLETS_GET_SUMMARY, description = WALLETS_GET_DESCRIPTION)
-    public ResponseEntity<DefaultResponse<WalletDTO>> getWallet(@AuthenticationPrincipal SessionUser sessionUser) {
+    public ResponseEntity<DefaultResponse<WalletDto>> getWallet(@AuthenticationPrincipal SessionUser sessionUser) {
 
         Wallet wallet = walletService.getWallet(sessionUser);
 
@@ -65,12 +65,12 @@ public class WalletController {
      */
     @PostMapping(HESOYAM)
     @Operation(summary = WALLETS_HESOYAM_SUMMARY, description = WALLETS_HESOYAM_DESCRIPTION)
-    public ResponseEntity<DefaultResponse<HesoyamDTO>> hesoyam(@AuthenticationPrincipal SessionUser sessionUser) {
+    public ResponseEntity<DefaultResponse<HesoyamDto>> hesoyam(@AuthenticationPrincipal SessionUser sessionUser) {
         boolean lucky = walletService.hesoyam(sessionUser);
 
         return ResponseEntity.ok(DefaultResponseBuilder.success(
                 String.format(lucky ? WALLET_LUCKY_MESSAGE : WALLET_UNLUCKY_MESSAGE),
-                new HesoyamDTO(lucky)
+                new HesoyamDto(lucky)
         ));
     }
 

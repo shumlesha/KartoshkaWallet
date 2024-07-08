@@ -66,7 +66,8 @@ public class SecurityConfig {
                         configurer.requestMatchers(
                                         SESSIONS_URL + REFRESH,
                                         "/swagger-ui/**",
-                                        "/v3/api-docs/**").permitAll()
+                                        "/v3/api-docs/**",
+                                        "/actuator/**").permitAll()
                                 .requestMatchers(HttpMethod.PUT, USERS_URL).authenticated()
                                 .requestMatchers(HttpMethod.GET, USERS_URL).authenticated()
                                 .requestMatchers(HttpMethod.GET, SESSIONS_URL).authenticated()

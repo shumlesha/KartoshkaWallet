@@ -17,8 +17,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.cft.template.dto.api.DefaultResponse;
-import ru.cft.template.dto.transfer.CreateTransferModel;
-import ru.cft.template.dto.transfer.TransferDTO;
+import ru.cft.template.dto.transfer.CreateTransferRequest;
+import ru.cft.template.dto.transfer.TransferDto;
 import ru.cft.template.dto.transfer.TransferFilter;
 import ru.cft.template.mapper.TransferMapper;
 import ru.cft.template.models.Transfer;
@@ -49,14 +49,14 @@ public class TransferController {
      * Отправить личный перевод
      *
      * @param sessionUser         сессионный пользователь
-     * @param createTransferModel модель создания личного перевода
+     * @param createTransferRequest модель создания личного перевода
      * @return dto созданного личного перевода
      */
     @PostMapping
     @Operation(summary = TRANSFERS_SEND_SUMMARY, description = TRANSFERS_SEND_DESCRIPTION)
-    public ResponseEntity<DefaultResponse<TransferDTO>> sendTransfer(@AuthenticationPrincipal SessionUser sessionUser,
-                                                                     @Validated @RequestBody CreateTransferModel createTransferModel) {
-        Transfer transfer = transferService.sendTransfer(sessionUser, createTransferModel);
+    public ResponseEntity<DefaultResponse<TransferDto>> sendTransfer(@AuthenticationPrincipal SessionUser sessionUser,
+                                                                     @Validated @RequestBody CreateTransferRequest createTransferRequest) {
+        Transfer transfer = transferService.sendTransfer(sessionUser, createTransferRequest);
 
         return ResponseEntity.ok(DefaultResponseBuilder.success(
                 String.format(TRANSFER_SUCCESSFULLY_SENT),
@@ -73,8 +73,8 @@ public class TransferController {
      */
     @GetMapping(ID)
     @Operation(summary = TRANSFERS_GET_OWN_SUMMARY, description = TRANSFERS_GET_OWN_DESCRIPTION)
-    public ResponseEntity<DefaultResponse<TransferDTO>> getBill(@AuthenticationPrincipal SessionUser sessionUser,
-                                                            @PathVariable UUID id) {
+    public ResponseEntity<DefaultResponse<TransferDto>> getBill(@AuthenticationPrincipal SessionUser sessionUser,
+                                                                @PathVariable UUID id) {
         Transfer transfer  = transferService.getTransfer(sessionUser, id);
 
         return ResponseEntity.ok(DefaultResponseBuilder.success(
@@ -93,13 +93,13 @@ public class TransferController {
      */
     @GetMapping
     @Operation(summary = TRANSFERS_GET_ALL_OWN_SUMMARY, description = TRANSFERS_GET_ALL_OWN_DESCRIPTION)
-    public ResponseEntity<DefaultResponse<Page<TransferDTO>>> getTransfers(@AuthenticationPrincipal SessionUser sessionUser,
-                                                                   @ParameterObject TransferFilter transferFilter,
-                                                                   @ParameterObject @PageableDefault(sort = "createdAt",
+    public ResponseEntity<DefaultResponse<Page<TransferDto>>> getTransfers(@AuthenticationPrincipal SessionUser sessionUser,
+                                                                           @ParameterObject TransferFilter transferFilter,
+                                                                           @ParameterObject @PageableDefault(sort = "createdAt",
                                                                            direction = Sort.Direction.ASC) Pageable pageable) {
         return ResponseEntity.ok(DefaultResponseBuilder.success(
                 String.format(TRANSFER_LIST_SUCCESSFULLY_RETRIEVED),
-                transferService.getTransfers(sessionUser, transferFilter, pageable).map(transferMapper::toDTO)
+                transferService.getTransfers(sessionUser, transferFilter, pageable)
         ));
     }
 }

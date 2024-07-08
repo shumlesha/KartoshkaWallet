@@ -5,14 +5,15 @@ services:
     container_name: postgres
     image: postgres:12
     hostname: database
-    volumes:
-      - ./postgres:/docker-entrypoint-initdb.d
     environment:
-      - POSTGRES_DB=wallet
-      - POSTGRES_USER=wallet
-      - POSTGRES_PASSWORD=wallet
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USERNAME=${POSTGRES_USERNAME}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     ports:
       - "5430:5432"
+    networks:
+      - monitoring
+
   # Сервис для разворачивания контейнера с приложением
   webapi:
     build:
@@ -24,12 +25,52 @@ services:
     depends_on:
       - postgres
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://database:5432/wallet
-      - POSTGRES_USER=wallet
-      - POSTGRES_PASSWORD=wallet
+      - HOST=postgres
+      - POSTGRES_USERNAME=${POSTGRES_USERNAME}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_PORT=${POSTGRES_PORT}
+      - DDL_AUTO=${DDL_AUTO}
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_ACCESS=${JWT_ACCESS}
+      - JWT_REFRESH=${JWT_REFRESH}
     healthcheck:
       test: curl http://localhost:8080 || exit 0
       interval: 10s
       retries: 5
       start_period: 15s
       timeout: 10s
+    networks:
+      - monitoring
+
+  prometheus:
+    image: prom/prometheus
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./prometheus:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    ports:
+      - "9090:9090"
+    networks:
+      - monitoring
+
+  grafana:
+    image: grafana/grafana
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - DS_PROMETHEUS=prometheus
+      - PROMETHEUS_URL=http://prometheus:9090
+    ports:
+      - "3000:3000"
+    depends_on:
+      - prometheus
+    networks:
+      - monitoring
+
+networks:
+  monitoring:
+    driver: bridge

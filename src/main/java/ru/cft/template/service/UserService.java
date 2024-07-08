@@ -1,13 +1,13 @@
 package ru.cft.template.service;
-import ru.cft.template.dto.user.CreateUserModel;
-import ru.cft.template.dto.user.EditUserModel;
+import ru.cft.template.dto.user.CreateUserRequest;
+import ru.cft.template.dto.user.EditUserRequest;
 import ru.cft.template.models.User;
 import ru.cft.template.security.SessionUser;
 
 public interface UserService {
-    User createUser(CreateUserModel createUserModel);
+    User createUser(CreateUserRequest createUserRequest);
 
-    User editUser(EditUserModel editUserModel, SessionUser sessionUser);
+    User editUser(EditUserRequest editUserRequest, SessionUser sessionUser);
 
     User getUser(SessionUser sessionUser);
 

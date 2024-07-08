@@ -11,12 +11,10 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.cft.template.dto.api.DefaultResponse;
-import ru.cft.template.dto.session.CreateSessionModel;
-import ru.cft.template.dto.session.RefreshSessionModel;
-import ru.cft.template.dto.session.SessionDTO;
-import ru.cft.template.dto.session.TokenResponse;
+import ru.cft.template.dto.session.CreateSessionRequest;
+import ru.cft.template.dto.session.RefreshSessionRequest;
+import ru.cft.template.dto.session.SessionDto;
 import ru.cft.template.mapper.SessionMapper;
-import ru.cft.template.models.Session;
 import ru.cft.template.security.SessionUser;
 import ru.cft.template.service.SessionAuthService;
 import ru.cft.template.service.SessionService;
@@ -42,15 +40,14 @@ public class SessionController {
     /**
      * Создает сессию
      *
-     * @param createSessionModel запрос на создание сессии
+     * @param createSessionRequest запрос на создание сессии
      * @return dto сессии
      */
     @PostMapping
     @Operation(summary = SESSIONS_CREATE_SUMMARY, description = SESSIONS_CREATE_DESCRIPTION)
-    public ResponseEntity<DefaultResponse<SessionDTO>> createSession(@Validated @RequestBody CreateSessionModel createSessionModel) {
-        SessionDTO createdSession = sessionAuthService.createSession(createSessionModel);
+    public ResponseEntity<DefaultResponse<SessionDto>> createSession(@Validated @RequestBody CreateSessionRequest createSessionRequest) {
+        SessionDto createdSession = sessionAuthService.createSession(createSessionRequest);
 
-        log.info("Created session for user: {}", createdSession.getUser().getId());
 
         return ResponseEntity.ok(DefaultResponseBuilder.success(
                 String.format(SESSION_SUCCESSFULLY_CREATED),
@@ -84,8 +81,8 @@ public class SessionController {
      */
     @GetMapping
     @Operation(summary = SESSIONS_GET_SUMMARY, description = SESSIONS_GET_DESCRIPTION)
-    public ResponseEntity<DefaultResponse<SessionDTO>> getCurrentSession(@AuthenticationPrincipal SessionUser sessionUser) {
-        SessionDTO session = sessionAuthService.getCurrentSession(sessionUser);
+    public ResponseEntity<DefaultResponse<SessionDto>> getCurrentSession(@AuthenticationPrincipal SessionUser sessionUser) {
+        SessionDto session = sessionAuthService.getCurrentSession(sessionUser);
 
         return ResponseEntity.ok(DefaultResponseBuilder.success(
                 String.format(SESSION_SUCCESSFULLY_RETRIEVED, sessionUser.getLastName(), sessionUser.getFirstName()),
@@ -96,13 +93,13 @@ public class SessionController {
     /**
      * Обновление текущей сессии
      *
-     * @param refreshSessionModel запрос на обновление сессии
+     * @param refreshSessionRequest запрос на обновление сессии
      * @return dto сессии
      */
     @PostMapping(REFRESH)
     @Operation(summary = SESSIONS_REFRESH_SUMMARY, description = SESSIONS_REFRESH_DESCRIPTION)
-    public ResponseEntity<DefaultResponse<SessionDTO>> refreshSession(@RequestBody RefreshSessionModel refreshSessionModel) {
-        SessionDTO session = sessionAuthService.refreshSession(refreshSessionModel);
+    public ResponseEntity<DefaultResponse<SessionDto>> refreshSession(@RequestBody RefreshSessionRequest refreshSessionRequest) {
+        SessionDto session = sessionAuthService.refreshSession(refreshSessionRequest);
 
         return ResponseEntity.ok(DefaultResponseBuilder.success(
                 String.format(SESSION_SUCCESSFULLY_REFRESHED),

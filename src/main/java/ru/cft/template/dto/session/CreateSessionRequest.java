@@ -13,7 +13,7 @@ import ru.cft.template.dto.validation.Password;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateSessionModel {
+public class CreateSessionRequest {
     @Email(regexp = RegexPatterns.EMAIL_PATTERN,
             message = ValidationMessages.EMAIL_VALID_REQUIRED)
     private String email;

@@ -1,12 +1,12 @@
 package ru.cft.template.service;
-import ru.cft.template.dto.session.CreateSessionModel;
-import ru.cft.template.dto.session.RefreshSessionModel;
-import ru.cft.template.dto.session.SessionDTO;
+import ru.cft.template.dto.session.CreateSessionRequest;
+import ru.cft.template.dto.session.RefreshSessionRequest;
+import ru.cft.template.dto.session.SessionDto;
 import ru.cft.template.security.SessionUser;
 
 public interface SessionAuthService {
-    SessionDTO createSession(CreateSessionModel createSessionModel);
-    SessionDTO getCurrentSession(SessionUser sessionUser);
+    SessionDto createSession(CreateSessionRequest createSessionRequest);
+    SessionDto getCurrentSession(SessionUser sessionUser);
 
-    SessionDTO refreshSession(RefreshSessionModel refreshSessionModel);
+    SessionDto refreshSession(RefreshSessionRequest refreshSessionRequest);
 }

@@ -14,7 +14,7 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateBillModel {
+public class CreateBillRequest {
 
     @NotNull(message = ValidationMessages.COST_NOTNULL_REQUIRED)
     @Positive(message = ValidationMessages.COST_ONLY_POSITIVE_REQUIRED)
