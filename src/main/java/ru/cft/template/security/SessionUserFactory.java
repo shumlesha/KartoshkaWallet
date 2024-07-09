@@ -1,8 +1,8 @@
 package ru.cft.template.security;
 
 import lombok.experimental.UtilityClass;
-import ru.cft.template.models.Session;
-import ru.cft.template.models.User;
+import ru.cft.template.entity.Session;
+import ru.cft.template.entity.User;
 
 @UtilityClass
 public class SessionUserFactory {

@@ -1,6 +1,6 @@
 package ru.cft.template.service;
-import ru.cft.template.models.Session;
-import ru.cft.template.models.User;
+import ru.cft.template.entity.Session;
+import ru.cft.template.entity.User;
 import ru.cft.template.security.SessionUser;
 
 public interface SessionService {

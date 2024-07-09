@@ -1,0 +1,17 @@
+{
+	"ulid": "01J2BD28KG704MA2X7Z0SMHT2B",
+	"minTime": 1720506396829,
+	"maxTime": 1720512000000,
+	"stats": {
+		"numSamples": 98647,
+		"numSeries": 737,
+		"numChunks": 1093
+	},
+	"compaction": {
+		"level": 1,
+		"sources": [
+			"01J2BD28KG704MA2X7Z0SMHT2B"
+		]
+	},
+	"version": 1
+}

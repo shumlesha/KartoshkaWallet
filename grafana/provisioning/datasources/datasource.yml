@@ -4,7 +4,7 @@ datasources:
   - name: Prometheus
     type: prometheus
     access: proxy
-    orgId: 1
+    inputName: DS_PROMETHEUS
     url: http://prometheus:9090
     isDefault: true
     basicAuth: false

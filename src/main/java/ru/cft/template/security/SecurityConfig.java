@@ -26,8 +26,6 @@ import static ru.cft.template.constants.endpoints.Endpoints.*;
 
 @Slf4j
 @Configuration
-@EnableWebSecurity
-@EnableMethodSecurity
 @RequiredArgsConstructor(onConstructor_ = {@Lazy})
 public class SecurityConfig {
     private final JwtTokenProvider jwtTokenProvider;

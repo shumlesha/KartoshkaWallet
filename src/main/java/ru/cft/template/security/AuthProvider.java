@@ -12,7 +12,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import ru.cft.template.models.Session;
+import ru.cft.template.entity.Session;
 import ru.cft.template.service.SessionService;
 import ru.cft.template.service.UserService;
 

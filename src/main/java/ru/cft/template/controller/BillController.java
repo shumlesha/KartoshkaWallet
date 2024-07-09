@@ -2,9 +2,7 @@ package ru.cft.template.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
@@ -20,8 +18,6 @@ import ru.cft.template.dto.bill.BillDto;
 import ru.cft.template.dto.bill.BillFilter;
 import ru.cft.template.dto.bill.CreateBillRequest;
 import ru.cft.template.dto.bill.DebtDto;
-import ru.cft.template.mapper.BillMapper;
-import ru.cft.template.models.Bill;
 import ru.cft.template.security.SessionUser;
 import ru.cft.template.service.BillService;
 import ru.cft.template.util.DefaultResponseBuilder;

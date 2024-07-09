@@ -4,7 +4,6 @@ import org.springframework.data.domain.Pageable;
 import ru.cft.template.dto.transfer.CreateTransferRequest;
 import ru.cft.template.dto.transfer.TransferDto;
 import ru.cft.template.dto.transfer.TransferFilter;
-import ru.cft.template.models.Transfer;
 import ru.cft.template.security.SessionUser;
 
 import java.util.UUID;

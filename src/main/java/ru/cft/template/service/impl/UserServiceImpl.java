@@ -1,7 +1,5 @@
 package ru.cft.template.service.impl;
-import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -12,8 +10,8 @@ import ru.cft.template.dto.user.UserDto;
 import ru.cft.template.exception.user.UserAlreadyExistsException;
 import ru.cft.template.exception.user.UserNotFoundException;
 import ru.cft.template.mapper.UserMapper;
-import ru.cft.template.models.User;
-import ru.cft.template.models.Wallet;
+import ru.cft.template.entity.User;
+import ru.cft.template.entity.Wallet;
 import ru.cft.template.repository.UserRepository;
 import ru.cft.template.security.SessionUser;
 import ru.cft.template.service.UserService;

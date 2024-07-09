@@ -7,8 +7,8 @@ import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 import ru.cft.template.constants.messages.ValidationMessages;
 import ru.cft.template.constants.regex.RegexPatterns;
-import ru.cft.template.dto.validation.BirthDate;
-import ru.cft.template.dto.validation.Patronymic;
+import ru.cft.template.validation.BirthDate;
+import ru.cft.template.validation.Patronymic;
 
 import java.time.LocalDate;
 

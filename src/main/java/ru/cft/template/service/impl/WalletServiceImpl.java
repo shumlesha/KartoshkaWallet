@@ -1,14 +1,12 @@
 package ru.cft.template.service.impl;
-import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.cft.template.dto.wallet.HesoyamDto;
 import ru.cft.template.dto.wallet.WalletDto;
 import ru.cft.template.mapper.WalletMapper;
-import ru.cft.template.models.User;
-import ru.cft.template.models.Wallet;
+import ru.cft.template.entity.User;
+import ru.cft.template.entity.Wallet;
 import ru.cft.template.repository.WalletRepository;
 import ru.cft.template.security.SessionUser;
 import ru.cft.template.service.WalletService;

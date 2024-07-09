@@ -1,7 +1,5 @@
 package ru.cft.template.service.impl;
-import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -15,7 +13,7 @@ import ru.cft.template.dto.session.SessionDto;
 import ru.cft.template.dto.session.TokenResponse;
 import ru.cft.template.exception.token.InvalidRefreshTokenException;
 import ru.cft.template.mapper.SessionMapper;
-import ru.cft.template.models.Session;
+import ru.cft.template.entity.Session;
 import ru.cft.template.repository.SessionRepository;
 import ru.cft.template.security.JwtTokenProvider;
 import ru.cft.template.security.SessionUser;

@@ -14,8 +14,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import ru.cft.template.constants.messages.ServiceMessages;
 import ru.cft.template.dto.session.TokenResponse;
-import ru.cft.template.models.Session;
-import ru.cft.template.models.User;
+import ru.cft.template.entity.Session;
+import ru.cft.template.entity.User;
 import ru.cft.template.security.props.JwtProperties;
 import ru.cft.template.service.SessionService;
 

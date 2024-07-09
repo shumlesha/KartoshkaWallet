@@ -7,8 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.cft.template.constants.messages.ValidationMessages;
-import ru.cft.template.dto.validation.Comment;
-import ru.cft.template.dto.validation.PaymentData;
+import ru.cft.template.validation.Comment;
+import ru.cft.template.validation.PaymentData;
 
 import java.util.UUID;
 

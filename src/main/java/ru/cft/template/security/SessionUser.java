@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import ru.cft.template.models.Session;
+import ru.cft.template.entity.Session;
 
 import java.util.Collection;
 import java.util.List;

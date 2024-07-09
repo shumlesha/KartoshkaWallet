@@ -2,33 +2,18 @@ package ru.cft.template.controller;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.cft.template.dto.api.DefaultResponse;
-import ru.cft.template.dto.user.CreateUserRequest;
-import ru.cft.template.dto.user.UserDto;
-import ru.cft.template.dto.wallet.WalletDto;
 import ru.cft.template.mapper.UserMapper;
-import ru.cft.template.models.User;
-import ru.cft.template.models.Wallet;
 import ru.cft.template.service.UserService;
 
-import java.time.LocalDate;
-
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static ru.cft.template.constants.endpoints.Endpoints.USERS_URL;
-import static ru.cft.template.constants.messages.ServiceMessages.USER_SUCCESSFULLY_CREATED;
 
 @WebMvcTest(UserController.class)
 @AutoConfigureMockMvc(addFilters = false)

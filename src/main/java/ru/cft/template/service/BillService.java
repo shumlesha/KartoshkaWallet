@@ -5,7 +5,6 @@ import ru.cft.template.dto.bill.BillDto;
 import ru.cft.template.dto.bill.BillFilter;
 import ru.cft.template.dto.bill.CreateBillRequest;
 import ru.cft.template.dto.bill.DebtDto;
-import ru.cft.template.models.Bill;
 import ru.cft.template.security.SessionUser;
 
 import java.util.UUID;

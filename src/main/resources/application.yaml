@@ -41,6 +41,8 @@ management:
             show-details: ALWAYS
         prometheus:
             enabled: true
+        metrics:
+            enabled: true
     prometheus:
         metrics:
             export:
@@ -51,3 +53,6 @@ management:
                 "[http.server.requests]": true
         enable:
           jvm: true
+        tags:
+          application: ${spring.application.name}
+

@@ -1,12 +1,10 @@
 package ru.cft.template.service.impl;
-import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.cft.template.models.Session;
-import ru.cft.template.models.User;
+import ru.cft.template.entity.Session;
+import ru.cft.template.entity.User;
 import ru.cft.template.repository.SessionRepository;
 import ru.cft.template.security.SessionUser;
 import ru.cft.template.service.SessionService;
