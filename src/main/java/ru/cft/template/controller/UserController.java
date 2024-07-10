@@ -18,7 +18,7 @@ import ru.cft.template.security.SessionUser;
 import ru.cft.template.service.UserService;
 import ru.cft.template.util.DefaultResponseBuilder;
 
-import static ru.cft.template.constants.endpoints.Endpoints.USERS_URL;
+import static ru.cft.template.constants.Endpoints.USERS_URL;
 import static ru.cft.template.constants.messages.ServiceMessages.*;
 import static ru.cft.template.constants.messages.SwaggerMessages.*;
 

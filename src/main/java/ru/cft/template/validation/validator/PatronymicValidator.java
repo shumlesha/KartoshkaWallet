@@ -4,7 +4,7 @@ package ru.cft.template.validation.validator;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import ru.cft.template.constants.messages.ValidationMessages;
-import ru.cft.template.constants.regex.RegexPatterns;
+import ru.cft.template.constants.RegexPatterns;
 import ru.cft.template.validation.Patronymic;
 
 import java.util.regex.Pattern;

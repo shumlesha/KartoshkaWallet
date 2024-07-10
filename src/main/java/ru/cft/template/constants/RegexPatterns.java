@@ -1,4 +1,4 @@
-package ru.cft.template.constants.regex;
+package ru.cft.template.constants;
 
 import lombok.experimental.UtilityClass;
 

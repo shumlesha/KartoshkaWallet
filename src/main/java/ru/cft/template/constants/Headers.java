@@ -1,4 +1,4 @@
-package ru.cft.template.constants.headers;
+package ru.cft.template.constants;
 
 import lombok.experimental.UtilityClass;
 

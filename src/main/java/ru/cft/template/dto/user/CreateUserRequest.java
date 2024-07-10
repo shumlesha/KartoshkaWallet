@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 import ru.cft.template.constants.messages.ValidationMessages;
-import ru.cft.template.constants.regex.RegexPatterns;
+import ru.cft.template.constants.RegexPatterns;
 import ru.cft.template.validation.BirthDate;
 import ru.cft.template.validation.Password;
 import ru.cft.template.validation.Patronymic;

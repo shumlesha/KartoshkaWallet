@@ -24,8 +24,8 @@ import ru.cft.template.util.DefaultResponseBuilder;
 
 import java.util.UUID;
 
-import static ru.cft.template.constants.endpoints.Endpoints.ID;
-import static ru.cft.template.constants.endpoints.Endpoints.TRANSFERS_URL;
+import static ru.cft.template.constants.Endpoints.ID;
+import static ru.cft.template.constants.Endpoints.TRANSFERS_URL;
 import static ru.cft.template.constants.messages.ServiceMessages.*;
 import static ru.cft.template.constants.messages.SwaggerMessages.*;
 

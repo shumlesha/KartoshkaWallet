@@ -9,7 +9,7 @@ import org.passay.EnglishCharacterData;
 import org.passay.PasswordData;
 import org.passay.RuleResult;
 import ru.cft.template.constants.messages.ValidationMessages;
-import ru.cft.template.constants.regex.RegexPatterns;
+import ru.cft.template.constants.RegexPatterns;
 import ru.cft.template.validation.Password;
 
 import java.util.Arrays;

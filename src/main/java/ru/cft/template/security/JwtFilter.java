@@ -15,7 +15,7 @@ import org.springframework.web.filter.GenericFilterBean;
 
 import java.io.IOException;
 
-import static ru.cft.template.constants.headers.Headers.AUTHORIZATION_HEADER;
+import static ru.cft.template.constants.Headers.AUTHORIZATION_HEADER;
 
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
