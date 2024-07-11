@@ -57,15 +57,15 @@ public class TransferServiceImpl implements TransferService {
 
         Object paymentInfo = createTransferRequest.getWalletId() != null ? createTransferRequest.getWalletId() : createTransferRequest.getPhoneNumber();
 
-        return switch (paymentInfo) {
+        return transferMapper.toDTO(transferRepository.saveAndFlush(switch (paymentInfo) {
             case UUID walletId -> sendTransferByWalletId(sessionUser, createTransferRequest);
             case String phoneNumber -> sendTransferByPhoneNumber(sessionUser, createTransferRequest);
             default -> throw new IllegalArgumentException();
-        };
+        }));
     }
 
 
-    private TransferDto sendTransferByWalletId(SessionUser sessionUser, CreateTransferRequest createTransferRequest) {
+    private Transfer sendTransferByWalletId(SessionUser sessionUser, CreateTransferRequest createTransferRequest) {
         UUID walletId = createTransferRequest.getWalletId();
         Long cost = createTransferRequest.getCost();
 
@@ -90,10 +90,10 @@ public class TransferServiceImpl implements TransferService {
         walletRepository.save(fromUserWallet);
         walletRepository.save(toUserWallet);
 
-        return transferMapper.toDTO(transferRepository.save(transfer));
+        return transfer;
     }
 
-    private TransferDto sendTransferByPhoneNumber(SessionUser sessionUser, CreateTransferRequest createTransferRequest) {
+    private Transfer sendTransferByPhoneNumber(SessionUser sessionUser, CreateTransferRequest createTransferRequest) {
 
         String phoneNumber = createTransferRequest.getPhoneNumber();
 
@@ -121,7 +121,7 @@ public class TransferServiceImpl implements TransferService {
         walletRepository.save(fromUserWallet);
         walletRepository.save(toUserWallet);
 
-        return transferMapper.toDTO(transferRepository.save(transfer));
+        return transfer;
 
     }
 

@@ -58,7 +58,7 @@ public class BillServiceImpl implements BillService {
                 BillStatus.UNPAID
         );
 
-        return billMapper.toDTO(billRepository.save(bill));
+        return billMapper.toDTO(billRepository.saveAndFlush(bill));
     }
 
     @Override
@@ -75,7 +75,7 @@ public class BillServiceImpl implements BillService {
 
         bill.setBillStatus(BillStatus.CANCELLED);
 
-        return billMapper.toDTO(billRepository.save(bill));
+        return billMapper.toDTO(billRepository.saveAndFlush(bill));
     }
 
     @Override
@@ -113,7 +113,7 @@ public class BillServiceImpl implements BillService {
         walletRepository.save(recipientWallet);
         walletRepository.save(senderWallet);
 
-        return billMapper.toDTO(billRepository.save(bill));
+        return billMapper.toDTO(billRepository.saveAndFlush(bill));
     }
 
 

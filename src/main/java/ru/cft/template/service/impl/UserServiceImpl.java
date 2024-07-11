@@ -51,7 +51,7 @@ public class UserServiceImpl implements UserService {
         wallet.setOwner(user);
         user.setWallet(wallet);
 
-        return userMapper.toDTO(userRepository.save(user));
+        return userMapper.toDTO(userRepository.saveAndFlush(user));
 
     }
 
@@ -66,7 +66,7 @@ public class UserServiceImpl implements UserService {
         Optional.ofNullable(editUserRequest.getPatronymic()).ifPresent(user::setPatronymic);
         Optional.ofNullable(editUserRequest.getBirthDate()).ifPresent(user::setBirthDate);
 
-        return userMapper.toDTO(userRepository.save(user));
+        return userMapper.toDTO(userRepository.saveAndFlush(user));
     }
 
     @Override

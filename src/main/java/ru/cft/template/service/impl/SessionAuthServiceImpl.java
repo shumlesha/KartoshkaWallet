@@ -67,7 +67,7 @@ public class SessionAuthServiceImpl implements SessionAuthService {
         session.setRefreshToken(tokenResponse.getRefreshToken());
         session.setEnabled(true);
 
-        Session savedSession = sessionRepository.save(session);
+        Session savedSession = sessionRepository.saveAndFlush(session);
 
         return sessionMapper.toDTO(savedSession, jwtTokenProvider.getExpirationDate(savedSession.getAccessToken()));
     }
