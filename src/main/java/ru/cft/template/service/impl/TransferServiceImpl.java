@@ -2,6 +2,7 @@ package ru.cft.template.service.impl;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -31,6 +32,7 @@ import ru.cft.template.util.QPredicates;
 
 import java.util.UUID;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class TransferServiceImpl implements TransferService {
@@ -57,15 +59,17 @@ public class TransferServiceImpl implements TransferService {
 
         Object paymentInfo = createTransferRequest.getWalletId() != null ? createTransferRequest.getWalletId() : createTransferRequest.getPhoneNumber();
 
-        return switch (paymentInfo) {
+        Transfer createdTransfer = transferRepository.saveAndFlush(switch (paymentInfo) {
             case UUID walletId -> sendTransferByWalletId(sessionUser, createTransferRequest);
             case String phoneNumber -> sendTransferByPhoneNumber(sessionUser, createTransferRequest);
             default -> throw new IllegalArgumentException();
-        };
+        });
+
+        return transferMapper.toDTO(createdTransfer);
     }
 
 
-    private TransferDto sendTransferByWalletId(SessionUser sessionUser, CreateTransferRequest createTransferRequest) {
+    private Transfer sendTransferByWalletId(SessionUser sessionUser, CreateTransferRequest createTransferRequest) {
         UUID walletId = createTransferRequest.getWalletId();
         Long cost = createTransferRequest.getCost();
 
@@ -90,10 +94,10 @@ public class TransferServiceImpl implements TransferService {
         walletRepository.save(fromUserWallet);
         walletRepository.save(toUserWallet);
 
-        return transferMapper.toDTO(transferRepository.save(transfer));
+        return transfer;
     }
 
-    private TransferDto sendTransferByPhoneNumber(SessionUser sessionUser, CreateTransferRequest createTransferRequest) {
+    private Transfer sendTransferByPhoneNumber(SessionUser sessionUser, CreateTransferRequest createTransferRequest) {
 
         String phoneNumber = createTransferRequest.getPhoneNumber();
 
@@ -121,7 +125,7 @@ public class TransferServiceImpl implements TransferService {
         walletRepository.save(fromUserWallet);
         walletRepository.save(toUserWallet);
 
-        return transferMapper.toDTO(transferRepository.save(transfer));
+        return transfer;
 
     }
 
