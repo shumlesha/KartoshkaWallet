@@ -314,7 +314,7 @@ public class CustomExceptionHandler {
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public DefaultResponse<?> handleException(Exception e) {
-        log.error("Very sad, because I didn't handle it...\nPlease, check:\n");
+        log.error("\nVery sad, because I didn't handle it...\nPlease, check:\n");
         log.error(e.getMessage());
         log.error(Arrays.toString(e.getStackTrace()));
 
