@@ -132,3 +132,12 @@
     - Пользователю-получателю
 
 
+---
+## Деплой
+
+- Установить проект с репозитория
+- Ввести ```docker-compose up -d``` в терминале в папке проекта
+  - Доступные ресурсы:
+    - Swagger:  http://localhost:8080/swagger-ui/index.html
+    - Prometheus: http://localhost:9090/
+    - Grafana: http://localhost:3000
