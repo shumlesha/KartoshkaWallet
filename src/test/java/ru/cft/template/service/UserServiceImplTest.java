@@ -62,7 +62,7 @@ public class UserServiceImplTest {
         when(userRepository.existsByEmail(createUserRequest.getEmail())).thenReturn(false);
         when(userRepository.existsByPhoneNumber(createUserRequest.getPhoneNumber())).thenReturn(false);
         when(passwordEncoder.encode(createUserRequest.getPassword())).thenReturn("encoded");
-        when(userRepository.save(any(User.class))).thenReturn(new User());
+        when(userRepository.saveAndFlush(any(User.class))).thenReturn(new User());
         when(userMapper.toDTO(any(User.class))).thenReturn(new UserDto());
 
         UserDto userDto = userService.createUser(createUserRequest);
@@ -72,7 +72,7 @@ public class UserServiceImplTest {
         verify(userRepository).existsByEmail(createUserRequest.getEmail());
         verify(userRepository).existsByPhoneNumber(createUserRequest.getPhoneNumber());
         verify(passwordEncoder).encode(createUserRequest.getPassword());
-        verify(userRepository).save(any(User.class));
+        verify(userRepository).saveAndFlush(any(User.class));
         verify(userMapper).toDTO(any(User.class));
     }
 
@@ -97,7 +97,7 @@ public class UserServiceImplTest {
         // Then
         assertThrows(UserAlreadyExistsException.class, () -> userService.createUser(createUserRequest));
         verify(userRepository).existsByEmail(createUserRequest.getEmail());
-        verify(userRepository, never()).save(any(User.class));
+        verify(userRepository, never()).saveAndFlush(any(User.class));
     }
 
     @Test
@@ -122,7 +122,7 @@ public class UserServiceImplTest {
         assertThrows(UserAlreadyExistsException.class, () -> userService.createUser(createUserRequest));
         verify(userRepository).existsByEmail(createUserRequest.getEmail());
         verify(userRepository).existsByPhoneNumber(createUserRequest.getPhoneNumber());
-        verify(userRepository, never()).save(any(User.class));
+        verify(userRepository, never()).saveAndFlush(any(User.class));
     }
 
 
@@ -156,7 +156,7 @@ public class UserServiceImplTest {
         );
 
         // When
-        when(userRepository.save(any(User.class))).thenReturn(user);
+        when(userRepository.saveAndFlush(any(User.class))).thenReturn(user);
         when(userMapper.toDTO(any(User.class))).thenReturn(new UserDto());
 
         // Then
@@ -166,7 +166,7 @@ public class UserServiceImplTest {
         assertEquals(editUserRequest.getFirstName(), user.getFirstName());
         assertEquals(editUserRequest.getLastName(), user.getLastName());
         assertEquals(editUserRequest.getPatronymic(), user.getPatronymic());
-        verify(userRepository).save(user);
+        verify(userRepository).saveAndFlush(user);
         verify(userMapper).toDTO(user);
     }
 
