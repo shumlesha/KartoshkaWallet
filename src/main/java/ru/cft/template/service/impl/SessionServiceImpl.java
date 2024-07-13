@@ -26,6 +26,7 @@ public class SessionServiceImpl implements SessionService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Session getSessionByAccessToken(String token) {
         return sessionRepository.findByAccessTokenAndEnabledTrue(token).orElse(null);
     }

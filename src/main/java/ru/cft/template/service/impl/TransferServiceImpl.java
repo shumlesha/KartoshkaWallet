@@ -126,6 +126,7 @@ public class TransferServiceImpl implements TransferService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public TransferDto getTransfer(SessionUser sessionUser, UUID id) {
         Transfer transfer = transferRepository.findById(id)
                 .orElseThrow(() -> new TransferNotFoundException(id));
@@ -140,6 +141,7 @@ public class TransferServiceImpl implements TransferService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<TransferDto> getTransfers(SessionUser sessionUser, TransferFilter transferFilter, Pageable pageable) {
         Predicate predicate = QPredicates.builder()
                 .add(transferFilter.direction(), direction -> getPredicateForDirection(sessionUser, direction))

@@ -119,6 +119,7 @@ public class BillServiceImpl implements BillService {
 
 
     @Override
+    @Transactional(readOnly = true)
     public BillDto getBill(SessionUser sessionUser, UUID id) {
         Bill bill = billRepository.findById(id)
                 .orElseThrow(() -> new BillNotFoundException(id));
@@ -133,6 +134,7 @@ public class BillServiceImpl implements BillService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<BillDto> getBills(SessionUser sessionUser, BillFilter billFilter, Pageable pageable) {
 
         Predicate predicate = QPredicates.builder()
@@ -148,12 +150,14 @@ public class BillServiceImpl implements BillService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public BillDto getOldestUnpaidBill(SessionUser sessionUser) {
         return billMapper.toDTO(billRepository.findTopByRecipientAndBillStatusOrderByCreatedAtAsc(sessionUser.getSession().getUser(),
                 BillStatus.UNPAID).orElseThrow(NoUnpaidBillsException::new));
     }
 
     @Override
+    @Transactional(readOnly = true)
     public DebtDto getTotalDebt(SessionUser sessionUser) {
         return new DebtDto(billRepository.getTotalDebt(sessionUser.getId()));
     }

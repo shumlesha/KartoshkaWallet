@@ -22,6 +22,7 @@ public class WalletServiceImpl implements WalletService {
     private final Random random = new Random();
 
     @Override
+    @Transactional(readOnly = true)
     public WalletDto getWallet(SessionUser sessionUser) {
         User user = sessionUser.getSession().getUser();
 
