@@ -13,8 +13,8 @@ import java.util.Map;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class DefaultResponse<T> { // Убрал statusCode, timestamp
+public class ErrorResponse {
     private HttpStatus status;
     private String message;
-    private T data;
+    private Map<String, List<String>> errors;
 }

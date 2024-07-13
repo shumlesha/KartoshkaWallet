@@ -148,8 +148,7 @@ class UserControllerTest {
                         new DefaultResponse<>(
                                 HttpStatus.OK,
                                 String.format(USER_SUCCESSFULLY_CREATED, userDto.getId()),
-                                userDto,
-                                null
+                                userDto
                         ))))
                 .andDo(print())
                 .andReturn();
@@ -199,8 +198,7 @@ class UserControllerTest {
                         new DefaultResponse<>(
                                 HttpStatus.OK,
                                 String.format(USER_SUCCESSFULLY_UPDATED, userDto.getId()),
-                                userDto,
-                                null
+                                userDto
                         ))))
                 .andDo(print())
                 .andReturn();
@@ -238,8 +236,7 @@ class UserControllerTest {
                         new DefaultResponse<>(
                                 HttpStatus.OK,
                                 String.format(USER_SUCCESSFULLY_RETRIEVED, userDto.getId()),
-                                userDto,
-                                null
+                                userDto
                         ))))
                 .andDo(print())
                 .andReturn();

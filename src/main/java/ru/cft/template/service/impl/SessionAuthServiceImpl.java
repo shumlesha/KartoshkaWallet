@@ -42,7 +42,6 @@ public class SessionAuthServiceImpl implements SessionAuthService {
 
         SessionUser sessionUser = (SessionUser) authentication.getPrincipal();
 
-        // return sessionUser.getSession();
         Session session = sessionUser.getSession();
 
         return sessionMapper.toDTO(session, jwtTokenProvider.getExpirationDate(session.getAccessToken()));
@@ -51,7 +50,7 @@ public class SessionAuthServiceImpl implements SessionAuthService {
     @Override
     public SessionDto getCurrentSession(SessionUser sessionUser) {
         Session session = sessionUser.getSession();
-        log.info("All good!");
+
         return sessionMapper.toDTO(session, jwtTokenProvider.getExpirationDate(session.getAccessToken()));
     }
 

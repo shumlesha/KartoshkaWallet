@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.cft.template.constants.messages.ServiceMessages;
 import ru.cft.template.constants.messages.ValidationMessages;
 import ru.cft.template.dto.api.DefaultResponse;
+import ru.cft.template.dto.api.ErrorResponse;
 import ru.cft.template.exception.bill.*;
 import ru.cft.template.exception.token.InvalidRefreshTokenException;
 import ru.cft.template.exception.transfer.NotUserTransferException;
@@ -29,7 +30,7 @@ import ru.cft.template.exception.user.UserNotFoundByPhoneException;
 import ru.cft.template.exception.user.UserNotFoundException;
 import ru.cft.template.exception.wallet.NotEnoughMoneyException;
 import ru.cft.template.exception.wallet.WalletNotFoundException;
-import ru.cft.template.util.DefaultResponseBuilder;
+import ru.cft.template.util.ResponseBuilder;
 
 import java.util.Arrays;
 import java.util.List;
@@ -45,8 +46,8 @@ public class CustomExceptionHandler {
 
     @ExceptionHandler(UserAlreadyExistsException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
-    public DefaultResponse<?> handleUserAlreadyExists(UserAlreadyExistsException exception) {
-        return DefaultResponseBuilder.error(
+    public ErrorResponse handleUserAlreadyExists(UserAlreadyExistsException exception) {
+        return ResponseBuilder.error(
                 exception.getMessage(),
                 HttpStatus.CONFLICT
         );
@@ -54,8 +55,8 @@ public class CustomExceptionHandler {
 
     @ExceptionHandler(UserNotFoundByPhoneException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public DefaultResponse<?> handleUserNotFoundByPhone(UserNotFoundByPhoneException exception) {
-        return DefaultResponseBuilder.error(
+    public ErrorResponse handleUserNotFoundByPhone(UserNotFoundByPhoneException exception) {
+        return ResponseBuilder.error(
                 exception.getMessage(),
                 HttpStatus.NOT_FOUND
         );
@@ -63,8 +64,8 @@ public class CustomExceptionHandler {
 
     @ExceptionHandler(UserNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public DefaultResponse<?> handleUserNotFound(UserNotFoundException exception) {
-        return DefaultResponseBuilder.error(
+    public ErrorResponse handleUserNotFound(UserNotFoundException exception) {
+        return ResponseBuilder.error(
                 exception.getMessage(),
                 HttpStatus.NOT_FOUND
         );
@@ -72,7 +73,7 @@ public class CustomExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public DefaultResponse<?> handleMethodArgumentNotValid(MethodArgumentNotValidException e) {
+    public ErrorResponse handleMethodArgumentNotValid(MethodArgumentNotValidException e) {
         log.error(e.getMessage());
         log.error(Arrays.toString(e.getStackTrace()));
 
@@ -90,7 +91,7 @@ public class CustomExceptionHandler {
                             .toList());
         }
 
-        return DefaultResponseBuilder.error(
+        return ResponseBuilder.error(
                 ValidationMessages.VALIDATION_FAILED,
                 HttpStatus.BAD_REQUEST,
                 errors
@@ -99,8 +100,8 @@ public class CustomExceptionHandler {
 
     @ExceptionHandler(PropertyReferenceException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public DefaultResponse<?> handlePropertyReference(PropertyReferenceException exception) {
-        return DefaultResponseBuilder.error(
+    public ErrorResponse handlePropertyReference(PropertyReferenceException exception) {
+        return ResponseBuilder.error(
                 exception.getMessage(),
                 HttpStatus.BAD_REQUEST
         );
@@ -108,7 +109,7 @@ public class CustomExceptionHandler {
 
     @ExceptionHandler(ConstraintViolationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public DefaultResponse<?> handleConstraintViolation(jakarta.validation.ConstraintViolationException e) {
+    public ErrorResponse handleConstraintViolation(jakarta.validation.ConstraintViolationException e) {
 
         Map<String, List<String>> errors = e.getConstraintViolations().stream()
                 .collect(Collectors.groupingBy(
@@ -116,7 +117,7 @@ public class CustomExceptionHandler {
                         Collectors.mapping(ConstraintViolation::getMessage, Collectors.toList())
                 ));
 
-        return DefaultResponseBuilder.error(
+        return ResponseBuilder.error(
                 ValidationMessages.VALIDATION_FAILED,
                 HttpStatus.BAD_REQUEST,
                 errors
@@ -126,8 +127,8 @@ public class CustomExceptionHandler {
 
     @ExceptionHandler(BadCredentialsException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public DefaultResponse<?> handleBadCredentials(BadCredentialsException exception) {
-        return DefaultResponseBuilder.error(
+    public ErrorResponse handleBadCredentials(BadCredentialsException exception) {
+        return ResponseBuilder.error(
                 exception.getMessage(),
                 HttpStatus.UNAUTHORIZED
         );
@@ -135,9 +136,9 @@ public class CustomExceptionHandler {
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public DefaultResponse<?> handleHttpMessageNotReadable(HttpMessageNotReadableException exception) {
+    public ErrorResponse handleHttpMessageNotReadable(HttpMessageNotReadableException exception) {
 
-        return DefaultResponseBuilder.error(
+        return ResponseBuilder.error(
                 ValidationMessages.NOT_READABLE,
                 HttpStatus.BAD_REQUEST
         );
@@ -145,8 +146,8 @@ public class CustomExceptionHandler {
 
     @ExceptionHandler({AccessDeniedException.class})
     @ResponseStatus(HttpStatus.FORBIDDEN)
-    public DefaultResponse<?> handleForbiddenException() {
-        return DefaultResponseBuilder.error(
+    public ErrorResponse handleForbiddenException() {
+        return ResponseBuilder.error(
                 ServiceMessages.ACCESS_DENIED_MESSAGE,
                 HttpStatus.FORBIDDEN
         );
@@ -154,8 +155,8 @@ public class CustomExceptionHandler {
 
     @ExceptionHandler(InvalidRefreshTokenException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public DefaultResponse<?> handleInvalidRefreshTokenException(InvalidRefreshTokenException e) {
-        return DefaultResponseBuilder.error(
+    public ErrorResponse handleInvalidRefreshTokenException(InvalidRefreshTokenException e) {
+        return ResponseBuilder.error(
                 e.getMessage(),
                 HttpStatus.UNAUTHORIZED
         );
@@ -163,8 +164,8 @@ public class CustomExceptionHandler {
 
     @ExceptionHandler(UsernameNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public DefaultResponse<?> handleUsernameNotFoundException(UsernameNotFoundException e) {
-        return DefaultResponseBuilder.error(
+    public ErrorResponse handleUsernameNotFoundException(UsernameNotFoundException e) {
+        return ResponseBuilder.error(
                 e.getMessage(),
                 HttpStatus.NOT_FOUND
         );
@@ -174,8 +175,8 @@ public class CustomExceptionHandler {
 
     @ExceptionHandler(BillAlreadyPaidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public DefaultResponse<?> handleBillAlreadyPaid(BillAlreadyPaidException exception) {
-        return DefaultResponseBuilder.error(
+    public ErrorResponse handleBillAlreadyPaid(BillAlreadyPaidException exception) {
+        return ResponseBuilder.error(
                 exception.getMessage(),
                 HttpStatus.BAD_REQUEST
         );
@@ -183,8 +184,8 @@ public class CustomExceptionHandler {
 
     @ExceptionHandler(BillFilterConflictException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public DefaultResponse<?> handleBillFilterConflict(BillFilterConflictException exception) {
-        return DefaultResponseBuilder.error(
+    public ErrorResponse handleBillFilterConflict(BillFilterConflictException exception) {
+        return ResponseBuilder.error(
                 exception.getMessage(),
                 HttpStatus.BAD_REQUEST
         );
@@ -192,8 +193,8 @@ public class CustomExceptionHandler {
 
     @ExceptionHandler(BillNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public DefaultResponse<?> handleBillNotFound(BillNotFoundException exception) {
-        return DefaultResponseBuilder.error(
+    public ErrorResponse handleBillNotFound(BillNotFoundException exception) {
+        return ResponseBuilder.error(
                 exception.getMessage(),
                 HttpStatus.NOT_FOUND
         );
@@ -201,8 +202,8 @@ public class CustomExceptionHandler {
 
     @ExceptionHandler(CancelledBillException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public DefaultResponse<?> handleCancelledBill(CancelledBillException exception) {
-        return DefaultResponseBuilder.error(
+    public ErrorResponse handleCancelledBill(CancelledBillException exception) {
+        return ResponseBuilder.error(
                 exception.getMessage(),
                 HttpStatus.BAD_REQUEST
         );
@@ -210,8 +211,8 @@ public class CustomExceptionHandler {
 
     @ExceptionHandler(NotBillOwnerException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
-    public DefaultResponse<?> handleNotBillOwner(NotBillOwnerException exception) {
-        return DefaultResponseBuilder.error(
+    public ErrorResponse handleNotBillOwner(NotBillOwnerException exception) {
+        return ResponseBuilder.error(
                 exception.getMessage(),
                 HttpStatus.FORBIDDEN
         );
@@ -219,8 +220,8 @@ public class CustomExceptionHandler {
 
     @ExceptionHandler(NotBillRecipientException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
-    public DefaultResponse<?> handleNotBillRecipient(NotBillRecipientException exception) {
-        return DefaultResponseBuilder.error(
+    public ErrorResponse handleNotBillRecipient(NotBillRecipientException exception) {
+        return ResponseBuilder.error(
                 exception.getMessage(),
                 HttpStatus.FORBIDDEN
         );
@@ -228,8 +229,8 @@ public class CustomExceptionHandler {
 
     @ExceptionHandler(NotUserBillException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
-    public DefaultResponse<?> handleNotUserBill(NotUserBillException exception) {
-        return DefaultResponseBuilder.error(
+    public ErrorResponse handleNotUserBill(NotUserBillException exception) {
+        return ResponseBuilder.error(
                 exception.getMessage(),
                 HttpStatus.FORBIDDEN
         );
@@ -237,8 +238,8 @@ public class CustomExceptionHandler {
 
     @ExceptionHandler(NoUnpaidBillsException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public DefaultResponse<?> handleNoUnpaidBills(NoUnpaidBillsException exception) {
-        return DefaultResponseBuilder.error(
+    public ErrorResponse handleNoUnpaidBills(NoUnpaidBillsException exception) {
+        return ResponseBuilder.error(
                 exception.getMessage(),
                 HttpStatus.BAD_REQUEST
         );
@@ -246,8 +247,8 @@ public class CustomExceptionHandler {
 
     @ExceptionHandler(SameUserBillException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public DefaultResponse<?> handleSameUserBill(SameUserBillException exception) {
-        return DefaultResponseBuilder.error(
+    public ErrorResponse handleSameUserBill(SameUserBillException exception) {
+        return ResponseBuilder.error(
                 exception.getMessage(),
                 HttpStatus.BAD_REQUEST
         );
@@ -255,8 +256,8 @@ public class CustomExceptionHandler {
 
     @ExceptionHandler(BillNotAllowedToCancelException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public DefaultResponse<?> handlePersonalBillCantBeCancelled(BillNotAllowedToCancelException exception) {
-        return DefaultResponseBuilder.error(
+    public ErrorResponse handlePersonalBillCantBeCancelled(BillNotAllowedToCancelException exception) {
+        return ResponseBuilder.error(
                 exception.getMessage(),
                 HttpStatus.BAD_REQUEST
         );
@@ -266,8 +267,8 @@ public class CustomExceptionHandler {
 
     @ExceptionHandler(TransferNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public DefaultResponse<?> handleTransferNotFound(TransferNotFoundException exception) {
-        return DefaultResponseBuilder.error(
+    public ErrorResponse handleTransferNotFound(TransferNotFoundException exception) {
+        return ResponseBuilder.error(
                 exception.getMessage(),
                 HttpStatus.NOT_FOUND
         );
@@ -275,8 +276,8 @@ public class CustomExceptionHandler {
 
     @ExceptionHandler(NotUserTransferException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
-    public DefaultResponse<?> handleNotUserTransfer(NotUserTransferException exception) {
-        return DefaultResponseBuilder.error(
+    public ErrorResponse handleNotUserTransfer(NotUserTransferException exception) {
+        return ResponseBuilder.error(
                 exception.getMessage(),
                 HttpStatus.FORBIDDEN
         );
@@ -285,8 +286,8 @@ public class CustomExceptionHandler {
 
     @ExceptionHandler(SameUserTransferException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public DefaultResponse<?> handleSameUserTransfer(SameUserTransferException exception) {
-        return DefaultResponseBuilder.error(
+    public ErrorResponse handleSameUserTransfer(SameUserTransferException exception) {
+        return ResponseBuilder.error(
                 exception.getMessage(),
                 HttpStatus.BAD_REQUEST
         );
@@ -294,8 +295,8 @@ public class CustomExceptionHandler {
 
     @ExceptionHandler(NotEnoughMoneyException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public DefaultResponse<?> handleNotEnoughMoney(NotEnoughMoneyException exception) {
-        return DefaultResponseBuilder.error(
+    public ErrorResponse handleNotEnoughMoney(NotEnoughMoneyException exception) {
+        return ResponseBuilder.error(
                 exception.getMessage(),
                 HttpStatus.BAD_REQUEST
         );
@@ -304,8 +305,8 @@ public class CustomExceptionHandler {
 
     @ExceptionHandler(WalletNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public DefaultResponse<?> handleWalletNotFound(WalletNotFoundException exception) {
-        return DefaultResponseBuilder.error(
+    public ErrorResponse handleWalletNotFound(WalletNotFoundException exception) {
+        return ResponseBuilder.error(
                 exception.getMessage(),
                 HttpStatus.NOT_FOUND
         );
@@ -313,12 +314,12 @@ public class CustomExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public DefaultResponse<?> handleException(Exception e) {
+    public ErrorResponse handleException(Exception e) {
         log.error("\nVery sad, because I didn't handle it...\nPlease, check:\n");
         log.error(e.getMessage());
         log.error(Arrays.toString(e.getStackTrace()));
 
-        return DefaultResponseBuilder.error(
+        return ResponseBuilder.error(
                 ServiceMessages.INTERNAL_MESSAGE,
                 HttpStatus.INTERNAL_SERVER_ERROR
         );

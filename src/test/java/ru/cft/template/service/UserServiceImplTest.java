@@ -61,6 +61,7 @@ public class UserServiceImplTest {
         // When
         when(userRepository.existsByEmail(createUserRequest.getEmail())).thenReturn(false);
         when(userRepository.existsByPhoneNumber(createUserRequest.getPhoneNumber())).thenReturn(false);
+        when(userMapper.toEntity(createUserRequest)).thenReturn(new User());
         when(passwordEncoder.encode(createUserRequest.getPassword())).thenReturn("encoded");
         when(userRepository.saveAndFlush(any(User.class))).thenReturn(new User());
         when(userMapper.toDTO(any(User.class))).thenReturn(new UserDto());
@@ -155,19 +156,31 @@ public class UserServiceImplTest {
                 "Alek?2005"
         );
 
+        User updatedUser = new User();
+        updatedUser.setFirstName(editUserRequest.getFirstName());
+        updatedUser.setLastName(editUserRequest.getLastName());
+        updatedUser.setPatronymic(editUserRequest.getPatronymic());
+
+        UserDto expectedUserDto = new UserDto();
+        expectedUserDto.setFirstName(editUserRequest.getFirstName());
+        expectedUserDto.setLastName(editUserRequest.getLastName());
+        expectedUserDto.setPatronymic(editUserRequest.getPatronymic());
+
         // When
-        when(userRepository.saveAndFlush(any(User.class))).thenReturn(user);
-        when(userMapper.toDTO(any(User.class))).thenReturn(new UserDto());
+        doNothing().when(userMapper).update(any(User.class), any(EditUserRequest.class));
+        when(userRepository.saveAndFlush(any(User.class))).thenReturn(updatedUser);
+        when(userMapper.toDTO(any(User.class))).thenReturn(expectedUserDto);
 
         // Then
-        UserDto userDto = userService.editUser(editUserRequest, sessionUser);
+        UserDto actualUserDto = userService.editUser(editUserRequest, sessionUser);
 
-        assertNotNull(userDto);
-        assertEquals(editUserRequest.getFirstName(), user.getFirstName());
-        assertEquals(editUserRequest.getLastName(), user.getLastName());
-        assertEquals(editUserRequest.getPatronymic(), user.getPatronymic());
-        verify(userRepository).saveAndFlush(user);
-        verify(userMapper).toDTO(user);
+        assertNotNull(actualUserDto);
+        assertEquals(expectedUserDto.getFirstName(), actualUserDto.getFirstName());
+        assertEquals(expectedUserDto.getLastName(), actualUserDto.getLastName());
+        assertEquals(expectedUserDto.getPatronymic(), actualUserDto.getPatronymic());
+        verify(userMapper).update(any(User.class), any(EditUserRequest.class));
+        verify(userRepository).saveAndFlush(any(User.class));
+        verify(userMapper).toDTO(updatedUser);
     }
 
     @Test

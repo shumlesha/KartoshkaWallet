@@ -15,7 +15,7 @@ import ru.cft.template.dto.wallet.HesoyamDto;
 import ru.cft.template.dto.wallet.WalletDto;
 import ru.cft.template.security.SessionUser;
 import ru.cft.template.service.WalletService;
-import ru.cft.template.util.DefaultResponseBuilder;
+import ru.cft.template.util.ResponseBuilder;
 
 import static ru.cft.template.constants.Endpoints.HESOYAM;
 import static ru.cft.template.constants.Endpoints.WALLETS_URL;
@@ -44,7 +44,7 @@ public class WalletController {
 
         WalletDto wallet = walletService.getWallet(sessionUser);
 
-        return ResponseEntity.ok(DefaultResponseBuilder.success(
+        return ResponseEntity.ok(ResponseBuilder.success(
                 String.format(WALLET_SUCCESSFULLY_RETRIEVED, wallet.getId()),
                 wallet
         ));
@@ -62,7 +62,7 @@ public class WalletController {
     public ResponseEntity<DefaultResponse<HesoyamDto>> hesoyam(@AuthenticationPrincipal SessionUser sessionUser) {
         HesoyamDto lucky = walletService.hesoyam(sessionUser);
 
-        return ResponseEntity.ok(DefaultResponseBuilder.success(
+        return ResponseEntity.ok(ResponseBuilder.success(
                 String.format(lucky.isWon() ? WALLET_LUCKY_MESSAGE : WALLET_UNLUCKY_MESSAGE),
                 lucky
         ));

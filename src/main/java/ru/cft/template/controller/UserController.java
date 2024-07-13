@@ -16,7 +16,7 @@ import ru.cft.template.dto.user.UserDto;
 
 import ru.cft.template.security.SessionUser;
 import ru.cft.template.service.UserService;
-import ru.cft.template.util.DefaultResponseBuilder;
+import ru.cft.template.util.ResponseBuilder;
 
 import static ru.cft.template.constants.Endpoints.USERS_URL;
 import static ru.cft.template.constants.messages.ServiceMessages.*;
@@ -44,7 +44,7 @@ public class UserController {
         UserDto createdUser = userService.createUser(createUserRequest);
 
 
-        return ResponseEntity.ok(DefaultResponseBuilder.success(
+        return ResponseEntity.ok(ResponseBuilder.success(
                 String.format(USER_SUCCESSFULLY_CREATED, createdUser.getId()),
                 createdUser
         ));
@@ -64,7 +64,7 @@ public class UserController {
         UserDto editedUser = userService.editUser(editUserRequest, sessionUser);
 
 
-        return ResponseEntity.ok(DefaultResponseBuilder.success(
+        return ResponseEntity.ok(ResponseBuilder.success(
                 String.format(USER_SUCCESSFULLY_UPDATED, editedUser.getId()),
                 editedUser
         ));
@@ -80,7 +80,7 @@ public class UserController {
     @Operation(summary = USERS_GET_SUMMARY, description = USERS_GET_DESCRIPTION)
     public ResponseEntity<DefaultResponse<UserDto>> getUser(@AuthenticationPrincipal SessionUser sessionUser) {
         UserDto user = userService.getUser(sessionUser);
-        return ResponseEntity.ok(DefaultResponseBuilder.success(
+        return ResponseEntity.ok(ResponseBuilder.success(
                 String.format(USER_SUCCESSFULLY_RETRIEVED, user.getId()),
                 user
         ));

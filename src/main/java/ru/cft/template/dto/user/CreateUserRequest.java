@@ -5,6 +5,7 @@ import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.FieldNameConstants;
 import org.hibernate.validator.constraints.Length;
 import ru.cft.template.constants.messages.ValidationMessages;
 import ru.cft.template.constants.RegexPatterns;
@@ -16,6 +17,7 @@ import ru.cft.template.validation.PhoneNumber;
 import java.time.LocalDate;
 
 @Data
+@FieldNameConstants
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreateUserRequest {

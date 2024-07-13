@@ -20,7 +20,7 @@ import ru.cft.template.dto.bill.CreateBillRequest;
 import ru.cft.template.dto.bill.DebtDto;
 import ru.cft.template.security.SessionUser;
 import ru.cft.template.service.BillService;
-import ru.cft.template.util.DefaultResponseBuilder;
+import ru.cft.template.util.ResponseBuilder;
 
 import java.util.UUID;
 
@@ -51,7 +51,7 @@ public class BillController {
                                                                @Validated @RequestBody CreateBillRequest createBillRequest) {
         BillDto createdBill = billService.createBill(sessionUser, createBillRequest);
 
-        return ResponseEntity.ok(DefaultResponseBuilder.success(
+        return ResponseEntity.ok(ResponseBuilder.success(
                 String.format(BILL_SUCCESSFULLY_CREATED, createdBill.getId()),
                 createdBill
         ));
@@ -71,7 +71,7 @@ public class BillController {
                                                                @PathVariable UUID id) {
         BillDto cancelledBill = billService.cancelBill(sessionUser, id);
 
-        return ResponseEntity.ok(DefaultResponseBuilder.success(
+        return ResponseEntity.ok(ResponseBuilder.success(
                 String.format(BILL_SUCCESSFULLY_CANCELED, id),
                 cancelledBill
         ));
@@ -90,7 +90,7 @@ public class BillController {
                                                             @PathVariable UUID id) {
         BillDto bill = billService.payBill(sessionUser, id);
 
-        return ResponseEntity.ok(DefaultResponseBuilder.success(
+        return ResponseEntity.ok(ResponseBuilder.success(
                 String.format(BILL_SUCCESSFULLY_PAYED, id),
                 bill
         ));
@@ -110,7 +110,7 @@ public class BillController {
                                                             @PathVariable UUID id) {
         BillDto bill = billService.getBill(sessionUser, id);
 
-        return ResponseEntity.ok(DefaultResponseBuilder.success(
+        return ResponseEntity.ok(ResponseBuilder.success(
                 String.format(BILL_SUCCESSFULLY_RETRIEVED, bill.getId()),
                 bill
         ));
@@ -130,7 +130,7 @@ public class BillController {
                                                                    @ParameterObject BillFilter billFilter,
                                                                    @ParameterObject @PageableDefault(sort = "createdAt",
                                                                            direction = Sort.Direction.ASC) Pageable pageable) {
-        return ResponseEntity.ok(DefaultResponseBuilder.success(
+        return ResponseEntity.ok(ResponseBuilder.success(
                 String.format(BILL_LIST_SUCCESSFULLY_RETRIEVED),
                 billService.getBills(sessionUser, billFilter, pageable)
         ));
@@ -147,7 +147,7 @@ public class BillController {
     public ResponseEntity<DefaultResponse<BillDto>> getOldestUnpaidBill(@AuthenticationPrincipal SessionUser sessionUser) {
         BillDto bill = billService.getOldestUnpaidBill(sessionUser);
 
-        return ResponseEntity.ok(DefaultResponseBuilder.success(
+        return ResponseEntity.ok(ResponseBuilder.success(
                 String.format(BILL_SUCCESSFULLY_RETRIEVED, bill.getId()),
                 bill
         ));
@@ -164,7 +164,7 @@ public class BillController {
     public ResponseEntity<DefaultResponse<DebtDto>> getTotalDebt(@AuthenticationPrincipal SessionUser sessionUser) {
         DebtDto debt = billService.getTotalDebt(sessionUser);
 
-        return ResponseEntity.ok(DefaultResponseBuilder.success(
+        return ResponseEntity.ok(ResponseBuilder.success(
                 String.format(DEBT_SUCCESSFULLY_RETRIEVED, debt.getDebt()),
                 debt
         ));

@@ -15,7 +15,7 @@ import ru.cft.template.dto.session.SessionDto;
 import ru.cft.template.security.SessionUser;
 import ru.cft.template.service.SessionAuthService;
 import ru.cft.template.service.SessionService;
-import ru.cft.template.util.DefaultResponseBuilder;
+import ru.cft.template.util.ResponseBuilder;
 
 import static ru.cft.template.constants.Endpoints.*;
 import static ru.cft.template.constants.messages.ServiceMessages.*;
@@ -44,7 +44,7 @@ public class SessionController {
         SessionDto createdSession = sessionAuthService.createSession(createSessionRequest);
 
 
-        return ResponseEntity.ok(DefaultResponseBuilder.success(
+        return ResponseEntity.ok(ResponseBuilder.success(
                 String.format(SESSION_SUCCESSFULLY_CREATED),
                 createdSession
         ));
@@ -62,7 +62,7 @@ public class SessionController {
     public ResponseEntity<DefaultResponse<?>> logoutSession(@AuthenticationPrincipal SessionUser sessionUser) {
         sessionService.logoutSession(sessionUser);
 
-        return ResponseEntity.ok(DefaultResponseBuilder.success(
+        return ResponseEntity.ok(ResponseBuilder.success(
                 String.format(SESSION_SUCCESSFULLY_LOGOUT)
         ));
     }
@@ -79,7 +79,7 @@ public class SessionController {
     public ResponseEntity<DefaultResponse<SessionDto>> getCurrentSession(@AuthenticationPrincipal SessionUser sessionUser) {
         SessionDto session = sessionAuthService.getCurrentSession(sessionUser);
 
-        return ResponseEntity.ok(DefaultResponseBuilder.success(
+        return ResponseEntity.ok(ResponseBuilder.success(
                 String.format(SESSION_SUCCESSFULLY_RETRIEVED, sessionUser.getLastName(), sessionUser.getFirstName()),
                 session
         ));
@@ -96,7 +96,7 @@ public class SessionController {
     public ResponseEntity<DefaultResponse<SessionDto>> refreshSession(@RequestBody RefreshSessionRequest refreshSessionRequest) {
         SessionDto session = sessionAuthService.refreshSession(refreshSessionRequest);
 
-        return ResponseEntity.ok(DefaultResponseBuilder.success(
+        return ResponseEntity.ok(ResponseBuilder.success(
                 String.format(SESSION_SUCCESSFULLY_REFRESHED),
                 session
         ));

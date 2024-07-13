@@ -30,21 +30,14 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public UserDto createUser(CreateUserRequest createUserRequest) {
         if (userRepository.existsByEmail(createUserRequest.getEmail())) {
-            throw new UserAlreadyExistsException("email", createUserRequest.getEmail());
+            throw new UserAlreadyExistsException(CreateUserRequest.Fields.email, createUserRequest.getEmail());
         }
 
         if (userRepository.existsByPhoneNumber(createUserRequest.getPhoneNumber())) {
-            throw new UserAlreadyExistsException("phoneNumber", createUserRequest.getPhoneNumber());
+            throw new UserAlreadyExistsException(CreateUserRequest.Fields.phoneNumber, createUserRequest.getPhoneNumber());
         }
 
-
-        User user = new User();
-        user.setFirstName(createUserRequest.getFirstName());
-        user.setLastName(createUserRequest.getLastName());
-        user.setPatronymic(createUserRequest.getPatronymic());
-        user.setPhoneNumber(createUserRequest.getPhoneNumber());
-        user.setEmail(createUserRequest.getEmail());
-        user.setBirthDate(createUserRequest.getBirthDate());
+        User user = userMapper.toEntity(createUserRequest);
         user.setPassword(passwordEncoder.encode(createUserRequest.getPassword()));
 
         Wallet wallet = new Wallet();
@@ -58,15 +51,13 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserDto editUser(EditUserRequest editUserRequest, SessionUser sessionUser) {
-        log.info(editUserRequest.toString());
         User user = sessionUser.getSession().getUser();
 
-        Optional.ofNullable(editUserRequest.getFirstName()).ifPresent(user::setFirstName);
-        Optional.ofNullable(editUserRequest.getLastName()).ifPresent(user::setLastName);
-        Optional.ofNullable(editUserRequest.getPatronymic()).ifPresent(user::setPatronymic);
-        Optional.ofNullable(editUserRequest.getBirthDate()).ifPresent(user::setBirthDate);
+        userMapper.update(user, editUserRequest);
 
-        return userMapper.toDTO(userRepository.saveAndFlush(user));
+        return userMapper.toDTO(
+                userRepository.saveAndFlush(user)
+        );
     }
 
     @Override

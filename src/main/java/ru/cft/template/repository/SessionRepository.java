@@ -7,9 +7,7 @@ import java.util.UUID;
 
 @Repository
 public interface SessionRepository extends JpaRepository<Session, UUID> {
-
     Optional<Session> findByAccessTokenAndEnabledTrue(String token);
-
 
     Optional<Session> findByRefreshToken(String refreshToken);
 }

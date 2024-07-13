@@ -20,7 +20,7 @@ import ru.cft.template.dto.transfer.TransferDto;
 import ru.cft.template.dto.transfer.TransferFilter;
 import ru.cft.template.security.SessionUser;
 import ru.cft.template.service.TransferService;
-import ru.cft.template.util.DefaultResponseBuilder;
+import ru.cft.template.util.ResponseBuilder;
 
 import java.util.UUID;
 
@@ -52,7 +52,7 @@ public class TransferController {
                                                                      @Validated @RequestBody CreateTransferRequest createTransferRequest) {
         TransferDto transfer = transferService.sendTransfer(sessionUser, createTransferRequest);
 
-        return ResponseEntity.ok(DefaultResponseBuilder.success(
+        return ResponseEntity.ok(ResponseBuilder.success(
                 String.format(TRANSFER_SUCCESSFULLY_SENT),
                 transfer
         ));
@@ -71,7 +71,7 @@ public class TransferController {
                                                                 @PathVariable UUID id) {
         TransferDto transfer  = transferService.getTransfer(sessionUser, id);
 
-        return ResponseEntity.ok(DefaultResponseBuilder.success(
+        return ResponseEntity.ok(ResponseBuilder.success(
                 String.format(TRANSFER_SUCCESSFULLY_RETRIEVED, transfer.getId()),
                 transfer
         ));
@@ -91,7 +91,7 @@ public class TransferController {
                                                                            @ParameterObject TransferFilter transferFilter,
                                                                            @ParameterObject @PageableDefault(sort = "createdAt",
                                                                            direction = Sort.Direction.ASC) Pageable pageable) {
-        return ResponseEntity.ok(DefaultResponseBuilder.success(
+        return ResponseEntity.ok(ResponseBuilder.success(
                 String.format(TRANSFER_LIST_SUCCESSFULLY_RETRIEVED),
                 transferService.getTransfers(sessionUser, transferFilter, pageable)
         ));
